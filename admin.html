@@ -5,6 +5,12 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="robots" content="noindex">
 <title>Админка · Тігіс</title>
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icon-192.png">
+<link rel="icon" href="icon-192.png">
+<meta name="theme-color" content="#8c4519">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Тігіс">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Golos+Text:wght@400;500;600&family=JetBrains+Mono:wght@400;600&family=Yeseva+One&display=swap">
@@ -53,17 +59,50 @@
 .form-acts .btn-primary { flex: 1; }
 
 .gate { max-width: 460px; margin: 80px auto; text-align: center; display: grid; gap: 14px; justify-items: center; color: var(--muted); }
+.back-btn { display: none; }
+.fab { display: none; }
+.pick { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.pick label { position: relative; overflow: hidden; }
+.pick input { position: absolute; inset: 0; opacity: 0; cursor: pointer; }
 
+/* Телефон и планшет: список, редактор открывается на весь экран */
 @media (max-width: 900px) {
-  .page { grid-template-columns: 1fr; }
-  .editor { position: static; order: -1; }
+  .page { grid-template-columns: 1fr; padding-block: 16px 110px; }
+  .field input, .field select, .field textarea { font-size: 16px; padding: .8em .9em; }
+  .editor {
+    display: none; position: fixed; inset: 0; z-index: 30; top: 0;
+    border-radius: 0; border: 0; overflow-y: auto; overscroll-behavior: contain;
+    padding: calc(env(safe-area-inset-top, 0px) + 12px) 16px calc(env(safe-area-inset-bottom, 0px) + 96px);
+    background: var(--bg);
+  }
+  body.editor-open .editor { display: grid; align-content: start; }
+  body.editor-open { overflow: hidden; }
+  .editor .panel-head { position: sticky; top: calc(-12px - env(safe-area-inset-top, 0px)); z-index: 2; background: var(--bg); margin-inline: -16px; padding: 10px 16px; border-bottom: 1px dashed var(--line); justify-content: start; flex-wrap: nowrap; }
+  .editor .panel-head h2 { font-size: 1.2rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-width: 0; }
+  .back-btn { display: inline-flex; flex: none; }
+  .form-acts {
+    position: fixed; left: 0; right: 0; bottom: 0; z-index: 31; background: var(--surface);
+    padding: 12px 16px calc(env(safe-area-inset-bottom, 0px) + 12px); border-top: 1px solid var(--line);
+  }
+  .form-acts .btn { min-height: 50px; }
+  .drop { min-height: 220px; }
+  .fab {
+    display: inline-flex; position: fixed; right: 16px; bottom: calc(env(safe-area-inset-bottom, 0px) + 18px); z-index: 20;
+    min-height: 56px; padding-inline: 22px; box-shadow: 0 10px 24px -10px var(--cognac); font-size: 1.05rem;
+  }
+  #new-btn { display: none; }
+  .item { cursor: pointer; }
+  .item .acts .btn { min-height: 40px; }
 }
 @media (max-width: 520px) {
-  .row2, .row3 { grid-template-columns: 1fr; }
-  .item { grid-template-columns: 60px 1fr; }
-  .thumb { width: 60px; height: 52px; }
-  .item .acts { grid-column: 1 / -1; justify-content: start; }
-  .panel { padding: 16px; }
+  .row2, .row3 { grid-template-columns: 1fr 1fr; }
+  .row3 .field:last-child { grid-column: 1 / -1; }
+  .item { grid-template-columns: 64px 1fr; }
+  .thumb { width: 64px; height: 56px; }
+  .item .acts { grid-column: 1 / -1; justify-content: stretch; }
+  .item .acts .btn { flex: 1; }
+  .panel { padding: 14px; }
+  .top .who #who { display: none; }
 }
 </style>
 </head>
@@ -102,6 +141,7 @@
 
   <section class="panel editor">
     <div class="panel-head">
+      <button class="btn btn-ghost btn-sm back-btn" type="button" id="back-btn" aria-label="Назад к списку">←</button>
       <h2 id="editor-title">Новая сумка</h2>
     </div>
     <form id="bag-form" novalidate>
@@ -113,6 +153,10 @@
             <span class="hint" id="drop-hint">Нажмите, чтобы выбрать фото,<br>или перетащите его сюда</span>
             <input type="file" id="photo" accept="image/*">
           </label>
+          <div class="pick">
+            <label class="btn btn-ghost btn-sm">Сфотографировать<input type="file" id="photo-camera" accept="image/*" capture="environment"></label>
+            <label class="btn btn-ghost btn-sm">Из галереи<input type="file" id="photo-gallery" accept="image/*"></label>
+          </div>
           <div class="photo-acts">
             <button class="btn btn-ghost btn-sm" type="button" id="photo-clear" hidden>Убрать фото</button>
           </div>
@@ -174,6 +218,8 @@
   </section>
 </main>
 
+<button class="btn btn-primary fab" type="button" id="fab" hidden>+ Новая сумка</button>
+
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <script src="config.js"></script>
 <script>
@@ -225,8 +271,11 @@ function start(session) {
   $("logout").hidden = false;
   $("gate").hidden = true;
   $("app").hidden = false;
+  $("fab").hidden = false;
   loadBags();
 }
+
+const isMobile = () => window.matchMedia("(max-width: 900px)").matches;
 
 $("logout").addEventListener("click", () => db.auth.signOut());
 
@@ -256,6 +305,7 @@ function renderList() {
       </div>
       <div class="acts">
         <button class="btn btn-ghost btn-sm" type="button" data-edit="${b.id}">Изменить</button>
+        <button class="btn btn-ghost btn-sm" type="button" data-toggle="${b.id}">${b.visible ? "Скрыть" : "Показать"}</button>
         <button class="btn btn-danger btn-sm" type="button" data-del="${b.id}">Удалить</button>
       </div>
     </div>`).join("");
@@ -274,8 +324,26 @@ let pendingDelete = null;
 $("list").addEventListener("click", async e => {
   const edit = e.target.closest("[data-edit]");
   const del = e.target.closest("[data-del]");
+  const toggle = e.target.closest("[data-toggle]");
   if (edit) { openEditor(bags.find(b => b.id === edit.dataset.edit)); return; }
-  if (!del) return;
+  if (toggle) {
+    const bag = bags.find(b => b.id === toggle.dataset.toggle);
+    toggle.disabled = true;
+    const { error } = await db.from("bags").update({ visible: !bag.visible }).eq("id", bag.id);
+    if (error) { showMsg($("list-msg"), "Не удалось изменить: " + error.message, "err"); toggle.disabled = false; return; }
+    showMsg($("list-msg"), `«${bag.name}» ${bag.visible ? "скрыта с сайта" : "снова на сайте"}.`, "ok");
+    loadBags();
+    return;
+  }
+  if (!del) {
+    // На телефоне нажатие на карточку открывает редактор
+    const item = e.target.closest(".item");
+    if (item && isMobile() && !e.target.closest("button")) {
+      const btn = item.querySelector("[data-edit]");
+      if (btn) openEditor(bags.find(b => b.id === btn.dataset.edit));
+    }
+    return;
+  }
   const id = del.dataset.del;
   if (pendingDelete !== id) {
     pendingDelete = id;
@@ -308,8 +376,28 @@ function openEditor(bag) {
   $("cancel-btn").hidden = false;
   showMsg($("form-msg"), "", "ok");
   renderList();
-  if (window.matchMedia("(max-width: 900px)").matches) $("bag-form").scrollIntoView({ behavior: "smooth" });
+  showEditor();
 }
+
+// Полноэкранный редактор на телефоне; кнопка «Назад» телефона закрывает его
+function showEditor() {
+  if (!isMobile()) return;
+  $("bag-form").closest(".editor").scrollTop = 0;
+  if (!document.body.classList.contains("editor-open")) {
+    document.body.classList.add("editor-open");
+    history.pushState({ editor: true }, "");
+  }
+}
+function closeEditor() {
+  document.body.classList.remove("editor-open");
+  resetEditor();
+}
+$("back-btn").addEventListener("click", () => {
+  if (history.state && history.state.editor) history.back(); else closeEditor();
+});
+window.addEventListener("popstate", () => {
+  if (document.body.classList.contains("editor-open")) closeEditor();
+});
 
 function resetEditor() {
   editingId = null;
@@ -323,8 +411,18 @@ function resetEditor() {
   renderList();
 }
 
-$("new-btn").addEventListener("click", () => { resetEditor(); showMsg($("form-msg"), "", "ok"); $("name").focus(); });
-$("cancel-btn").addEventListener("click", () => { resetEditor(); showMsg($("form-msg"), "", "ok"); });
+function openNew() {
+  resetEditor();
+  showMsg($("form-msg"), "", "ok");
+  showEditor();
+  if (!isMobile()) $("name").focus();
+}
+$("new-btn").addEventListener("click", openNew);
+$("fab").addEventListener("click", openNew);
+$("cancel-btn").addEventListener("click", () => {
+  if (document.body.classList.contains("editor-open")) $("back-btn").click();
+  else { resetEditor(); showMsg($("form-msg"), "", "ok"); }
+});
 
 function setPreview(src) {
   $("preview").hidden = !src;
@@ -333,7 +431,8 @@ function setPreview(src) {
   $("photo-clear").hidden = !src;
 }
 
-$("photo").addEventListener("change", e => pickFile(e.target.files[0]));
+["photo", "photo-camera", "photo-gallery"].forEach(id =>
+  $(id).addEventListener("change", e => { pickFile(e.target.files[0]); e.target.value = ""; }));
 const drop = $("drop");
 ["dragenter", "dragover"].forEach(ev => drop.addEventListener(ev, e => { e.preventDefault(); drop.classList.add("over"); }));
 ["dragleave", "drop"].forEach(ev => drop.addEventListener(ev, () => drop.classList.remove("over")));
@@ -414,10 +513,16 @@ $("bag-form").addEventListener("submit", async e => {
       : await db.from("bags").insert(row).select().single();
     if (res.error) throw new Error(res.error.message);
     if (old && old.photo_url && old.photo_url !== url) removePhoto(old.photo_url);
-    showMsg($("form-msg"), "Сохранено. На сайте изменения видны сразу после обновления страницы.", "ok");
+    const done = `«${res.data.name}» сохранена. На сайте изменения видны после обновления страницы.`;
     await loadBags();
-    openEditor(res.data);
-    showMsg($("form-msg"), "Сохранено. На сайте изменения видны сразу после обновления страницы.", "ok");
+    if (isMobile()) {
+      // На телефоне возвращаемся к списку
+      if (history.state && history.state.editor) history.back(); else closeEditor();
+      showMsg($("list-msg"), done, "ok");
+    } else {
+      openEditor(res.data);
+      showMsg($("form-msg"), done, "ok");
+    }
   } catch (err) {
     showMsg($("form-msg"), "Не удалось сохранить: " + err.message, "err");
   } finally {
