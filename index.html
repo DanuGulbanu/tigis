@@ -175,6 +175,10 @@ section { padding-block: 80px; scroll-margin-top: 70px; }
 }
 .card-art svg { width: 84%; height: auto; transition: transform .35s; }
 .card:hover .card-art svg { transform: rotate(-2deg) scale(1.03); }
+.card-art.has-photo { padding: 0; background: var(--bg); overflow: hidden; }
+.card-art.has-photo img { width: 100%; height: 100%; object-fit: cover; transition: transform .4s; }
+.card:hover .card-art.has-photo img { transform: scale(1.04); }
+.card-art .hours { z-index: 1; }
 .card-art .hours { position: absolute; top: 14px; left: 14px; font-family: var(--font-mono); font-size: .72rem; color: var(--muted); background: var(--bg); border: 1px dashed var(--line); border-radius: 999px; padding: 3px 10px; }
 .card-body { display: flex; flex-direction: column; gap: 14px; padding: 22px; flex: 1; border-top: 1px dashed var(--line); }
 .card h3 { font-size: 1.4rem; }
@@ -378,7 +382,7 @@ section { padding-block: 80px; scroll-margin-top: 70px; }
         <a class="btn btn-ghost" href="#order">Заказать свою</a>
       </div>
       <div class="hero-facts">
-        <div><b>6</b><span>моделей</span></div>
+        <div><b id="model-count">6</b><span>моделей</span></div>
         <div><b>7–10</b><span>дней на пошив</span></div>
         <div><b>2 года</b><span>гарантия на шов</span></div>
       </div>
@@ -405,7 +409,7 @@ section { padding-block: 80px; scroll-margin-top: 70px; }
       <div class="section-head">
         <div>
           <span class="eyebrow">Каталог</span>
-          <h2>Шесть моделей на&nbsp;каждый день</h2>
+          <h2>Сумки на&nbsp;каждый день</h2>
         </div>
         <p>Каждая сумка шьётся под заказ. Выберите цвет кожи прямо на карточке: он перейдёт в форму заказа.</p>
       </div>
@@ -535,9 +539,11 @@ section { padding-block: 80px; scroll-margin-top: 70px; }
   </div>
 </footer>
 
+<script src="config.js"></script>
 <script>
-// Каталог: один список данных — карточки и форма строятся из него
-const PRODUCTS = [
+// Каталог: один список данных — карточки и форма строятся из него.
+// Если подключено хранилище (config.js), список заменяется сумками из админки.
+let PRODUCTS = [
   { id: "bazar", name: "Тоут «Базар»", shape: "tote", desc: "Вместительная сумка на плечо для города и рынка. Внутри карман для телефона и ключей.", size: "38 × 32 × 12 см", leather: "2,2 мм", hours: 14, price: 68000 },
   { id: "zhol", name: "Кросс-боди «Жол»", shape: "crossbody", desc: "Небольшая сумка через плечо с клапаном и регулируемым ремнём.", size: "22 × 16 × 6 см", leather: "1,8 мм", hours: 8, price: 42000 },
   { id: "oyu", name: "Клатч «Ою»", shape: "clutch", desc: "Клатч из кожи со вставкой из войлока, на которой вышит орнамент ою.", size: "26 × 15 × 2 см", leather: "1,8 мм + войлок", hours: 10, price: 36000 },
@@ -651,31 +657,42 @@ document.getElementById("hero-svg").innerHTML = `
   </g>`;
 
 // Карточки каталога
+const esc = s => String(s ?? "").replace(/[&<>"']/g, ch => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[ch]));
 const grid = document.getElementById("catalog-grid");
-grid.innerHTML = PRODUCTS.map(p => `
-  <article class="card" data-id="${p.id}" data-color="${COLORS[0].id}">
-    <div class="card-art" aria-hidden="true">
-      <span class="hours">${p.hours} ч работы</span>
-      <svg viewBox="0 0 200 170">${SHAPES[p.shape]}</svg>
+
+function renderCatalog() {
+  grid.innerHTML = PRODUCTS.map(p => `
+  <article class="card" data-id="${esc(p.id)}" data-color="${COLORS[0].id}">
+    <div class="card-art${p.photo ? " has-photo" : ""}">
+      ${p.hours ? `<span class="hours">${esc(p.hours)} ч работы</span>` : ""}
+      ${p.photo
+        ? `<img src="${esc(p.photo)}" alt="${esc(p.name)}" loading="lazy">`
+        : `<svg viewBox="0 0 200 170" aria-hidden="true">${SHAPES[p.shape] || SHAPES.tote}</svg>`}
     </div>
     <div class="card-body">
-      <h3>${p.name}</h3>
-      <p class="desc">${p.desc}</p>
+      <h3>${esc(p.name)}</h3>
+      <p class="desc">${esc(p.desc)}</p>
       <dl class="specs">
-        <dt>Размер</dt><dd>${p.size}</dd>
-        <dt>Кожа</dt><dd>${p.leather}</dd>
-        <dt>Работа</dt><dd>${p.hours} ч</dd>
+        ${p.size ? `<dt>Размер</dt><dd>${esc(p.size)}</dd>` : ""}
+        ${p.leather ? `<dt>Кожа</dt><dd>${esc(p.leather)}</dd>` : ""}
+        ${p.hours ? `<dt>Работа</dt><dd>${esc(p.hours)} ч</dd>` : ""}
       </dl>
-      <div class="colors" role="group" aria-label="Цвет кожи: ${p.name}">
+      <div class="colors" role="group" aria-label="Цвет кожи: ${esc(p.name)}">
         <span class="label">Цвет: <b>${COLORS[0].name}</b></span>
         ${COLORS.map((c, i) => `<button type="button" class="dot" style="background:${c.hex}" data-color="${c.id}" aria-label="${c.name}" aria-pressed="${i === 0}"></button>`).join("")}
       </div>
       <div class="card-foot">
         <span class="price-tag">${fmt(p.price)}</span>
-        <button class="btn btn-primary" type="button" data-order="${p.id}" aria-label="Заказать: ${p.name}">Заказать</button>
+        <button class="btn btn-primary" type="button" data-order="${esc(p.id)}" aria-label="Заказать: ${esc(p.name)}">Заказать</button>
       </div>
     </div>
   </article>`).join("");
+
+  const current = modelSel.value;
+  modelSel.innerHTML = PRODUCTS.map(p => `<option value="${esc(p.id)}">${esc(p.name)} — ${fmt(p.price)}</option>`).join("");
+  if (PRODUCTS.some(p => String(p.id) === current)) modelSel.value = current;
+  document.getElementById("model-count").textContent = PRODUCTS.length;
+}
 
 function paintCard(card, colorId) {
   const c = COLORS.find(x => x.id === colorId) || COLORS[0];
@@ -699,7 +716,7 @@ const resultText = document.getElementById("result-text");
 const copyBtn = document.getElementById("copy-btn");
 const copyStatus = document.getElementById("copy-status");
 
-modelSel.innerHTML = PRODUCTS.map(p => `<option value="${p.id}">${p.name} — ${fmt(p.price)}</option>`).join("");
+renderCatalog();
 document.getElementById("f-color").insertAdjacentHTML("beforeend", COLORS.map((c, i) => `
   <label class="swatch">
     <input type="radio" name="color" id="f-color-${c.id}" value="${c.id}"${i === 0 ? " checked" : ""}>
@@ -707,7 +724,7 @@ document.getElementById("f-color").insertAdjacentHTML("beforeend", COLORS.map((c
   </label>`).join(""));
 
 const qty = () => Math.min(20, Math.max(1, parseInt(qtyIn.value, 10) || 1));
-const product = () => PRODUCTS.find(p => p.id === modelSel.value) || PRODUCTS[0];
+const product = () => PRODUCTS.find(p => String(p.id) === modelSel.value) || PRODUCTS[0];
 
 function updateTotal() {
   totalEl.textContent = fmt(product().price * qty());
@@ -791,6 +808,27 @@ copyBtn.addEventListener("click", () => {
 });
 
 updateTotal();
+
+// Сумки из админки (Supabase). Без настроек или при ошибке остаётся встроенный список.
+async function loadRemoteCatalog() {
+  const cfg = window.TIGIS_CONFIG || {};
+  if (!cfg.supabaseUrl || !cfg.supabaseAnonKey) return;
+  try {
+    const res = await fetch(`${cfg.supabaseUrl}/rest/v1/bags?select=*&visible=eq.true&order=sort.asc,created_at.asc`, {
+      headers: { apikey: cfg.supabaseAnonKey, Authorization: `Bearer ${cfg.supabaseAnonKey}` }
+    });
+    if (!res.ok) return;
+    const rows = await res.json();
+    if (!rows.length) return;
+    PRODUCTS = rows.map(r => ({
+      id: r.id, name: r.name, desc: r.description, size: r.size, leather: r.leather,
+      hours: r.hours, price: r.price, shape: r.shape || "tote", photo: r.photo_url
+    }));
+    renderCatalog();
+    updateTotal();
+  } catch (err) { /* остаётся встроенный каталог */ }
+}
+loadRemoteCatalog();
 </script>
 </body>
 </html>

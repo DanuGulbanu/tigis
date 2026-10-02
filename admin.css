@@ -1,0 +1,81 @@
+/* Общие стили страницы входа и админки «Тігіс» */
+:root {
+  --bg: #e2e8e1;
+  --surface: #eff3ed;
+  --ink: #1b221e;
+  --muted: #546058;
+  --line: #bcc7bc;
+  --cognac: #8c4519;
+  --cognac-soft: #ead7c3;
+  --felt-bg: #2d3a73;
+  --on-felt: #eef0fa;
+  --on-accent: #fffaf2;
+  --danger: #a3271b;
+  --ok: #2f6b3f;
+  --font-display: "Yeseva One", Georgia, "Times New Roman", serif;
+  --font-body: "Golos Text", "Segoe UI", system-ui, -apple-system, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, "Cascadia Mono", Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #141916; --surface: #1c231f; --ink: #e6ece5; --muted: #9aa69e; --line: #33403a;
+    --cognac: #dc9a64; --cognac-soft: #3a2a1e; --felt-bg: #212b57; --on-accent: #1b130c;
+    --danger: #f08a7e; --ok: #7fcf94;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #141916; --surface: #1c231f; --ink: #e6ece5; --muted: #9aa69e; --line: #33403a;
+  --cognac: #dc9a64; --cognac-soft: #3a2a1e; --felt-bg: #212b57; --on-accent: #1b130c;
+  --danger: #f08a7e; --ok: #7fcf94;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0; background: var(--bg); color: var(--ink);
+  font-family: var(--font-body); font-size: 1rem; line-height: 1.55;
+  padding-inline: 16px;
+}
+h1, h2, h3 { font-family: var(--font-display); font-weight: 400; line-height: 1.15; margin: 0; text-wrap: balance; }
+p { margin: 0; }
+a { color: var(--cognac); }
+:focus-visible { outline: 2px solid var(--cognac); outline-offset: 3px; border-radius: 4px; }
+[hidden] { display: none !important; }
+
+.logo { display: inline-flex; align-items: center; gap: 10px; text-decoration: none; color: var(--ink); }
+.logo svg { width: 34px; height: 34px; }
+.logo b { font-family: var(--font-display); font-weight: 400; font-size: 1.4rem; }
+
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: .5em;
+  font: 600 1rem/1 var(--font-body); padding: .85em 1.3em; border-radius: 999px; cursor: pointer;
+  text-decoration: none; border: 1.5px solid var(--cognac); transition: background .2s, color .2s, opacity .2s;
+}
+.btn-primary { background: var(--cognac); color: var(--on-accent); }
+.btn-primary:hover { opacity: .9; }
+.btn-ghost { background: transparent; color: var(--cognac); border-style: dashed; }
+.btn-ghost:hover { background: var(--cognac-soft); }
+.btn-danger { background: transparent; color: var(--danger); border-color: var(--danger); }
+.btn-sm { padding: .55em .95em; font-size: .88rem; }
+.btn[disabled] { opacity: .55; cursor: progress; }
+
+.field { display: grid; gap: 6px; min-width: 0; }
+.field label { font-weight: 500; font-size: .92rem; }
+.field label small { color: var(--muted); font-weight: 400; }
+.field input, .field select, .field textarea {
+  font: inherit; color: var(--ink); background: var(--bg); border: 1px solid var(--line); border-radius: 10px;
+  padding: .7em .85em; width: 100%; min-width: 0;
+}
+.field textarea { resize: vertical; min-height: 90px; }
+.check { display: inline-flex; align-items: center; gap: 8px; font-size: .95rem; cursor: pointer; }
+.check input { width: 18px; height: 18px; accent-color: var(--cognac); }
+
+.msg { padding: 12px 14px; border-radius: 10px; font-size: .92rem; }
+.msg.ok { background: color-mix(in srgb, var(--ok) 14%, transparent); color: var(--ok); }
+.msg.err { background: color-mix(in srgb, var(--danger) 14%, transparent); color: var(--danger); }
+.msg.info { background: var(--cognac-soft); color: var(--ink); }
+.mono { font-family: var(--font-mono); font-variant-numeric: tabular-nums; }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { transition: none !important; animation: none !important; }
+}
