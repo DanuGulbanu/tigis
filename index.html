@@ -4,251 +4,355 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Golos+Text:wght@400;500;600&family=JetBrains+Mono:wght@400;600&family=Yeseva+One&display=swap">
 <style>
-/* Layout: одна колонка шириной до 1120px, блоки разделены «швом» — косой пунктирной строчкой */
+/* Layout: колонка до 1180px; главный экран — текст слева и войлочная панель с сумкой справа;
+   «Как мы шьём» — войлочная полоса во всю ширину; блоки сшиты косой строчкой седельного шва */
 :root {
-  --bg: #e4eae3;
-  --surface: #f1f5ef;
-  --ink: #1d2420;
-  --muted: #56625a;
-  --line: #bfcabf;
-  --cognac: #8f4a1f;
-  --cognac-soft: #e9d6c4;
-  --indigo: #2f3c78;
-  --leather: #a65d2c;
-  --leather-shade: #7f4219;
+  --bg: #e2e8e1;
+  --surface: #eff3ed;
+  --ink: #1b221e;
+  --muted: #546058;
+  --line: #bcc7bc;
+  --cognac: #8c4519;
+  --cognac-soft: #ead7c3;
+  --felt-bg: #2d3a73;
+  --on-felt: #eef0fa;
+  --on-felt-muted: #b9c0e6;
   --felt: #34428a;
-  --thread: #f3e7cf;
+  --brass: #c9a24a;
+  --thread: #f4e8d0;
+  --kraft: #e6d5b5;
+  --kraft-ink: #2b2016;
   --on-accent: #fffaf2;
   --danger: #a3271b;
+  --felt-noise: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='f'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 .35 0 0 0 -.08'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23f)'/%3E%3C/svg%3E");
 
   --font-display: "Yeseva One", Georgia, "Times New Roman", serif;
   --font-body: "Golos Text", "Segoe UI", system-ui, -apple-system, sans-serif;
   --font-mono: "JetBrains Mono", ui-monospace, "Cascadia Mono", Consolas, monospace;
 
-  --step--1: 0.875rem;
+  --step--1: .875rem;
   --step-0: 1rem;
   --step-1: 1.25rem;
-  --step-2: 1.6rem;
-  --step-3: clamp(2rem, 1.3rem + 3vw, 3.4rem);
-  --radius: 10px;
-  --wrap: 1120px;
+  --step-2: clamp(1.7rem, 1.3rem + 1.6vw, 2.5rem);
+  --step-3: clamp(2.5rem, 1.4rem + 4.4vw, 4.8rem);
+  --wrap: 1180px;
 }
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
-    --bg: #151a17; --surface: #1d241f; --ink: #e6ece5; --muted: #9ba79f; --line: #34403a;
-    --cognac: #d9945e; --cognac-soft: #3a2a1f; --indigo: #9ba8ea;
-    --leather: #b26a36; --leather-shade: #82461d; --felt: #4352a0; --thread: #f0e2c6;
-    --on-accent: #1b130c; --danger: #f08a7e;
+    --bg: #141916; --surface: #1c231f; --ink: #e6ece5; --muted: #9aa69e; --line: #33403a;
+    --cognac: #dc9a64; --cognac-soft: #3a2a1e; --felt-bg: #212b57; --on-felt: #eef0fa; --on-felt-muted: #aab2dc;
+    --felt: #4352a0; --on-accent: #1b130c; --danger: #f08a7e;
     color-scheme: dark;
   }
 }
 :root[data-theme="dark"] {
-  --bg: #151a17; --surface: #1d241f; --ink: #e6ece5; --muted: #9ba79f; --line: #34403a;
-  --cognac: #d9945e; --cognac-soft: #3a2a1f; --indigo: #9ba8ea;
-  --leather: #b26a36; --leather-shade: #82461d; --felt: #4352a0; --thread: #f0e2c6;
-  --on-accent: #1b130c; --danger: #f08a7e;
+  --bg: #141916; --surface: #1c231f; --ink: #e6ece5; --muted: #9aa69e; --line: #33403a;
+  --cognac: #dc9a64; --cognac-soft: #3a2a1e; --felt-bg: #212b57; --on-felt: #eef0fa; --on-felt-muted: #aab2dc;
+  --felt: #4352a0; --on-accent: #1b130c; --danger: #f08a7e;
   color-scheme: dark;
 }
 
 * { box-sizing: border-box; }
 html { scroll-behavior: smooth; }
-@media (prefers-reduced-motion: reduce) {
-  html { scroll-behavior: auto; }
-  *, *::before, *::after { transition: none !important; animation: none !important; }
-}
 body {
-  background: var(--bg);
-  color: var(--ink);
-  font-family: var(--font-body);
-  font-size: var(--step-0);
-  line-height: 1.6;
-  padding-inline: 16px;
-  overflow-x: hidden;
+  background: var(--bg); color: var(--ink);
+  font-family: var(--font-body); font-size: var(--step-0); line-height: 1.6;
+  padding-inline: 16px; overflow-x: hidden;
 }
 .wrap { max-width: var(--wrap); margin-inline: auto; }
-h1, h2, h3 { font-family: var(--font-display); font-weight: 400; line-height: 1.15; text-wrap: balance; margin: 0; }
+h1, h2, h3 { font-family: var(--font-display); font-weight: 400; line-height: 1.1; text-wrap: balance; margin: 0; }
 p { margin: 0; }
 a { color: inherit; }
 :focus-visible { outline: 2px solid var(--cognac); outline-offset: 3px; border-radius: 4px; }
-
-/* Шов — фирменный разделитель */
-.seam {
-  height: 6px;
-  margin-block: 0;
-  border: 0;
-  background: repeating-linear-gradient(115deg, var(--cognac) 0 7px, transparent 7px 13px);
-  -webkit-mask: linear-gradient(#000 0 0) center / 100% 2px no-repeat;
-          mask: linear-gradient(#000 0 0) center / 100% 2px no-repeat;
-  opacity: .75;
-}
-.seam-wrap { max-width: var(--wrap); margin-inline: auto; position: relative; }
-.seam-wrap::before, .seam-wrap::after {
-  content: ""; position: absolute; top: 50%; width: 5px; height: 5px; border-radius: 50%;
-  background: var(--cognac); transform: translateY(-50%); opacity: .75;
-}
-.seam-wrap::before { left: -10px; }
-.seam-wrap::after { right: -10px; }
-
 .mono { font-family: var(--font-mono); font-variant-numeric: tabular-nums; }
-.eyebrow {
-  font-family: var(--font-mono); font-size: 0.75rem; letter-spacing: .12em; text-transform: uppercase;
-  color: var(--cognac);
+.eyebrow { display: inline-flex; align-items: center; gap: 10px; font-family: var(--font-mono); font-size: .75rem; letter-spacing: .14em; text-transform: uppercase; color: var(--cognac); }
+.eyebrow::before { content: ""; width: 28px; height: 2px; background: repeating-linear-gradient(90deg, currentColor 0 5px, transparent 5px 9px); }
+
+/* Седельный шов — фирменный разделитель */
+.seam { position: relative; max-width: var(--wrap); margin-inline: auto; height: 14px; }
+.seam::before {
+  content: ""; position: absolute; inset: 6px 0 auto; height: 2px;
+  background: repeating-linear-gradient(90deg, var(--cognac) 0 8px, transparent 8px 13px);
+  transform: skewX(-30deg); opacity: .7;
+}
+.seam::after {
+  content: ""; position: absolute; inset: 2px 0 auto; height: 10px;
+  background: radial-gradient(circle, var(--line) 1.3px, transparent 1.6px) 0 0 / 13px 10px repeat-x;
+  opacity: .9;
 }
 
 /* Кнопки */
 .btn {
-  display: inline-flex; align-items: center; justify-content: center; gap: .5em;
-  font: 600 var(--step-0)/1 var(--font-body);
-  padding: .9em 1.4em; border-radius: 999px; cursor: pointer; text-decoration: none;
-  border: 1.5px solid var(--cognac); transition: background .2s, color .2s, transform .2s;
+  display: inline-flex; align-items: center; justify-content: center; gap: .55em;
+  font: 600 var(--step-0)/1 var(--font-body); padding: 1em 1.5em; border-radius: 999px;
+  cursor: pointer; text-decoration: none; border: 1.5px solid var(--cognac);
+  transition: background .2s, color .2s, transform .2s, box-shadow .2s;
 }
-.btn-primary { background: var(--cognac); color: var(--on-accent); }
-.btn-primary:hover { background: transparent; color: var(--cognac); }
+.btn-primary { background: var(--cognac); color: var(--on-accent); box-shadow: 0 6px 18px -8px var(--cognac); }
+.btn-primary:hover { transform: translateY(-2px); box-shadow: 0 10px 22px -10px var(--cognac); }
 .btn-ghost { background: transparent; color: var(--cognac); border-style: dashed; }
 .btn-ghost:hover { background: var(--cognac-soft); }
 .btn:active { transform: translateY(1px); }
+.btn svg { width: 18px; height: 18px; }
 
 /* Шапка */
 .site-header {
-  position: sticky; top: env(safe-area-inset-top, 0px); z-index: 10;
-  background: color-mix(in srgb, var(--bg) 88%, transparent);
-  -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px);
+  position: sticky; top: env(safe-area-inset-top, 0px); z-index: 20;
   margin-inline: -16px; padding-inline: 16px;
+  background: color-mix(in srgb, var(--bg) 86%, transparent);
+  -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px);
   border-bottom: 1px dashed var(--line);
 }
-.site-header .wrap { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding-block: 14px; flex-wrap: wrap; }
-.logo { display: flex; align-items: baseline; gap: .5em; text-decoration: none; }
-.logo b { font-family: var(--font-display); font-weight: 400; font-size: 1.6rem; color: var(--ink); }
-.logo span { font-family: var(--font-mono); font-size: .7rem; color: var(--muted); letter-spacing: .08em; text-transform: uppercase; }
-.nav { display: flex; gap: 4px 20px; flex-wrap: wrap; }
-.nav a { text-decoration: none; color: var(--muted); font-weight: 500; padding-block: 4px; border-bottom: 1.5px dashed transparent; }
+.site-header .wrap { display: flex; align-items: center; justify-content: space-between; gap: 10px 24px; padding-block: 12px; flex-wrap: wrap; }
+.logo { display: flex; align-items: center; gap: 10px; text-decoration: none; }
+.logo svg { width: 38px; height: 38px; flex: none; }
+.logo b { font-family: var(--font-display); font-weight: 400; font-size: 1.55rem; line-height: 1; color: var(--ink); }
+.logo small { display: block; font-family: var(--font-mono); font-size: .62rem; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); margin-top: 3px; }
+.nav { display: flex; align-items: center; gap: 4px 22px; flex-wrap: wrap; }
+.nav a { text-decoration: none; color: var(--muted); font-weight: 500; padding-block: 4px; border-bottom: 1.5px dashed transparent; transition: color .2s, border-color .2s; }
 .nav a:hover { color: var(--ink); border-bottom-color: var(--cognac); }
+.nav a.nav-cta { color: var(--cognac); border: 1.5px dashed var(--cognac); border-radius: 999px; padding: 6px 14px; }
+.nav a.nav-cta:hover { background: var(--cognac-soft); }
 
 /* Главный экран */
-.hero { display: grid; grid-template-columns: 1.1fr 1fr; gap: 40px; align-items: center; padding-block: 56px 64px; }
+.hero { display: grid; grid-template-columns: 1.05fr 1fr; gap: 48px; align-items: center; padding-block: 56px 64px; }
 .hero > * { min-width: 0; }
-.hero h1 { font-size: var(--step-3); margin-block: 14px 18px; }
-.hero h1 em { font-style: normal; color: var(--cognac); }
-.hero p.lead { font-size: var(--step-1); color: var(--muted); max-width: 34ch; line-height: 1.5; }
-.hero-actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 28px; }
-.hero-facts { display: flex; flex-wrap: wrap; gap: 8px 24px; margin-top: 32px; font-family: var(--font-mono); font-size: var(--step--1); color: var(--muted); }
-.hero-facts b { color: var(--ink); font-weight: 600; }
-.hero-art { position: relative; background: var(--surface); border-radius: 18px; padding: 24px; border: 1px dashed var(--line); }
-.hero-art svg { display: block; width: 100%; height: auto; }
+.hero h1 { font-size: var(--step-3); margin-block: 18px 22px; letter-spacing: -.01em; }
+.hero h1 em {
+  font-style: normal; color: var(--cognac);
+  text-decoration: underline dashed; text-decoration-thickness: 3px; text-underline-offset: .14em;
+}
+.lead { font-size: var(--step-1); color: var(--muted); max-width: 36ch; line-height: 1.5; }
+.hero-actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 32px; }
+.hero-facts { display: grid; grid-template-columns: repeat(3, auto); justify-content: start; gap: 8px 32px; margin-top: 40px; padding-top: 22px; border-top: 1px dashed var(--line); }
+.hero-facts div { display: grid; gap: 2px; }
+.hero-facts b { font-family: var(--font-mono); font-size: 1.35rem; font-weight: 600; font-variant-numeric: tabular-nums; }
+.hero-facts span { font-size: .85rem; color: var(--muted); }
+
+.felt {
+  background-color: var(--felt-bg); background-image: var(--felt-noise);
+  color: var(--on-felt);
+}
+.hero-art { position: relative; border-radius: 28px; padding: 28px; overflow: hidden; }
+.hero-art::before {
+  content: ""; position: absolute; inset: 12px; border: 2px dashed color-mix(in srgb, var(--on-felt) 45%, transparent); border-radius: 20px; pointer-events: none;
+}
+.hero-art svg { position: relative; display: block; width: 100%; height: auto; }
+.hero-art .caption { position: relative; display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; font-family: var(--font-mono); font-size: .72rem; letter-spacing: .08em; text-transform: uppercase; color: var(--on-felt-muted); padding: 0 8px; }
+.tag-swing { transform-box: fill-box; transform-origin: 50% 0; animation: swing 2.4s cubic-bezier(.3,.7,.4,1) .3s both; }
+@keyframes swing { 0% { transform: rotate(14deg); } 35% { transform: rotate(-7deg); } 65% { transform: rotate(3deg); } 100% { transform: rotate(0); } }
+
+/* Полоса материалов */
+.materials { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px 28px; padding-block: 22px; font-family: var(--font-mono); font-size: .8rem; color: var(--muted); }
+.materials span { display: inline-flex; align-items: center; gap: 10px; }
+.materials span + span::before { content: "✕"; color: var(--cognac); font-size: .7rem; margin-right: 18px; }
 
 /* Секции */
-section { padding-block: 64px; scroll-margin-top: 70px; }
-.section-head { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: end; gap: 12px 32px; margin-bottom: 32px; }
-.section-head h2 { font-size: var(--step-2); margin-top: 8px; }
-.section-head p { color: var(--muted); max-width: 46ch; }
+section { padding-block: 80px; scroll-margin-top: 70px; }
+.section-head { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: end; gap: 16px 40px; margin-bottom: 40px; }
+.section-head > div { display: grid; gap: 14px; }
+.section-head h2 { font-size: var(--step-2); }
+.section-head p { color: var(--muted); max-width: 44ch; }
 
 /* Каталог */
-.catalog { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+.catalog { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
 .card {
-  display: flex; flex-direction: column; background: var(--surface); border-radius: var(--radius);
-  border: 1px solid var(--line); overflow: hidden; min-width: 0;
+  --bag: #a65d2c; --bag-d: #74390f;
+  display: flex; flex-direction: column; min-width: 0;
+  background: var(--surface); border: 1px solid var(--line); border-radius: 18px; overflow: hidden;
+  transition: transform .25s, box-shadow .25s;
 }
-.card-art { aspect-ratio: 5 / 4; max-width: 100%; display: grid; place-items: center; padding: 16px;
-  background-image: radial-gradient(var(--line) 1px, transparent 1px); background-size: 14px 14px; border-bottom: 1px dashed var(--line); }
-.card-art svg { width: 82%; height: auto; }
-.card-body { display: flex; flex-direction: column; gap: 12px; padding: 20px; flex: 1; }
-.card h3 { font-size: var(--step-1); }
+.card:hover { transform: translateY(-4px); box-shadow: 0 18px 40px -24px color-mix(in srgb, var(--ink) 60%, transparent); }
+.card-art {
+  position: relative; aspect-ratio: 6 / 5; max-width: 100%; display: grid; place-items: center; padding: 18px;
+  background-image: radial-gradient(var(--line) 1px, transparent 1.2px); background-size: 16px 16px;
+}
+.card-art svg { width: 84%; height: auto; transition: transform .35s; }
+.card:hover .card-art svg { transform: rotate(-2deg) scale(1.03); }
+.card-art .hours { position: absolute; top: 14px; left: 14px; font-family: var(--font-mono); font-size: .72rem; color: var(--muted); background: var(--bg); border: 1px dashed var(--line); border-radius: 999px; padding: 3px 10px; }
+.card-body { display: flex; flex-direction: column; gap: 14px; padding: 22px; flex: 1; border-top: 1px dashed var(--line); }
+.card h3 { font-size: 1.4rem; }
 .card .desc { color: var(--muted); font-size: .95rem; }
-.specs { display: grid; grid-template-columns: auto 1fr; gap: 4px 14px; margin: 0; font-family: var(--font-mono); font-size: .8rem; font-variant-numeric: tabular-nums; }
+.specs { display: grid; grid-template-columns: auto 1fr; gap: 5px 14px; margin: 0; font-family: var(--font-mono); font-size: .8rem; font-variant-numeric: tabular-nums; }
 .specs dt { color: var(--muted); }
 .specs dd { margin: 0; text-align: right; }
-.card-foot { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-top: auto; padding-top: 14px; border-top: 1px dashed var(--line); }
-.price { font-family: var(--font-mono); font-weight: 600; font-size: 1.15rem; font-variant-numeric: tabular-nums; }
-.card .btn { padding: .7em 1.2em; font-size: .95rem; }
+.colors { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.colors .label { font-size: .82rem; color: var(--muted); margin-right: 4px; min-width: 7.5em; }
+.dot { width: 24px; height: 24px; border-radius: 50%; border: 2px solid var(--surface); box-shadow: 0 0 0 1px var(--line); cursor: pointer; padding: 0; transition: box-shadow .15s, transform .15s; }
+.dot:hover { transform: scale(1.12); }
+.dot[aria-pressed="true"] { box-shadow: 0 0 0 2px var(--cognac); }
+.card-foot { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-top: auto; padding-top: 16px; border-top: 1px dashed var(--line); flex-wrap: wrap; }
+.price-tag {
+  position: relative; display: inline-flex; align-items: center;
+  padding: 7px 14px 7px 26px; background: var(--kraft); color: var(--kraft-ink);
+  font-family: var(--font-mono); font-weight: 600; font-size: 1.05rem; font-variant-numeric: tabular-nums;
+  clip-path: polygon(12px 0, 100% 0, 100% 100%, 12px 100%, 0 50%);
+  border-radius: 0 6px 6px 0;
+}
+.price-tag::before { content: ""; position: absolute; left: 11px; top: 50%; width: 7px; height: 7px; margin-top: -3.5px; border-radius: 50%; background: var(--surface); }
+.card .btn { padding: .8em 1.25em; font-size: .95rem; }
 
-/* Как мы шьём */
-.steps { display: grid; grid-template-columns: repeat(4, 1fr); gap: 28px; counter-reset: step; list-style: none; margin: 0; padding: 0; }
-.steps li { display: flex; flex-direction: column; gap: 10px; min-width: 0; }
-.step-icon { width: 56px; height: 56px; border-radius: 50%; border: 1.5px dashed var(--cognac); display: grid; place-items: center; color: var(--cognac); }
-.step-icon svg { width: 28px; height: 28px; }
-.steps h3 { font-size: 1.2rem; }
-.steps h3::before { counter-increment: step; content: counter(step) " · "; font-family: var(--font-mono); font-size: .8rem; color: var(--muted); vertical-align: middle; }
-.steps p { color: var(--muted); font-size: .95rem; }
+/* Как мы шьём — войлочная полоса */
+.band { margin-inline: -16px; padding-inline: 16px; }
+.band .eyebrow { color: var(--brass); }
+.band .section-head p { color: var(--on-felt-muted); }
+.steps { position: relative; display: grid; grid-template-columns: repeat(4, 1fr); gap: 32px; list-style: none; margin: 0; padding: 0; }
+.steps::before {
+  content: ""; position: absolute; left: 28px; right: 28px; top: 27px; height: 2px;
+  background: repeating-linear-gradient(90deg, var(--thread) 0 8px, transparent 8px 14px); opacity: .7;
+}
+.steps li { position: relative; display: flex; flex-direction: column; gap: 12px; min-width: 0; }
+.hole {
+  width: 56px; height: 56px; border-radius: 50%; display: grid; place-items: center;
+  background: var(--felt-bg); border: 2px dashed var(--thread); color: var(--thread);
+  font-family: var(--font-mono); font-weight: 600; font-size: 1rem;
+}
+.steps h3 { font-size: 1.35rem; margin-top: 6px; }
+.steps p { color: var(--on-felt-muted); font-size: .95rem; }
+.steps .stat { margin-top: auto; padding-top: 10px; font-family: var(--font-mono); font-size: .78rem; color: var(--brass); letter-spacing: .04em; }
 
 /* Заказ */
-.order { display: grid; grid-template-columns: 1fr 1.4fr; gap: 40px; align-items: start; }
+.order { display: grid; grid-template-columns: 1fr 1.35fr; gap: 56px; align-items: start; }
 .order > * { min-width: 0; }
-.terms { display: grid; gap: 14px; list-style: none; padding: 0; margin: 24px 0 0; }
-.terms li { display: grid; grid-template-columns: 7.5rem 1fr; gap: 12px; align-items: baseline; padding-bottom: 14px; border-bottom: 1px dashed var(--line); }
-.terms .num { font-family: var(--font-mono); font-weight: 600; font-size: 1.3rem; color: var(--cognac); font-variant-numeric: tabular-nums; }
+.order-info { display: grid; gap: 18px; position: sticky; top: 90px; }
+.order-info h2 { font-size: var(--step-2); }
+.terms { display: grid; list-style: none; padding: 0; margin: 10px 0 0; }
+.terms li { display: grid; grid-template-columns: 8.5rem 1fr; gap: 14px; align-items: baseline; padding-block: 16px; border-bottom: 1px dashed var(--line); }
+.terms li:first-child { border-top: 1px dashed var(--line); }
+.terms .num { font-family: var(--font-mono); font-weight: 600; font-size: 1.45rem; color: var(--cognac); font-variant-numeric: tabular-nums; }
 .terms span:last-child { color: var(--muted); }
-.note { margin-top: 20px; font-size: .9rem; color: var(--muted); }
+.note { display: flex; gap: 12px; padding: 16px; border-radius: 12px; background: var(--cognac-soft); font-size: .92rem; }
+.note svg { flex: none; width: 20px; height: 20px; color: var(--cognac); margin-top: 2px; }
 
-.form { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 28px; display: grid; gap: 18px; }
+.slip { position: relative; background: var(--surface); border: 1px solid var(--line); border-radius: 6px 6px 18px 18px; padding: 36px 32px 32px; display: grid; gap: 20px; }
+.slip::before {
+  content: ""; position: absolute; left: 0; right: 0; top: -7px; height: 14px;
+  background: radial-gradient(circle at 9px 7px, var(--bg) 5px, transparent 5.5px) 0 0 / 18px 14px repeat-x;
+}
+.slip-head { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; flex-wrap: wrap; padding-bottom: 16px; border-bottom: 1.5px dashed var(--line); }
+.slip-head h3 { font-size: 1.5rem; }
+.slip-head span { font-family: var(--font-mono); font-size: .72rem; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); }
 .row { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
-.field { display: grid; gap: 6px; min-width: 0; }
-.field label { font-weight: 500; font-size: .92rem; }
+.field { display: grid; gap: 7px; min-width: 0; }
+.field label, .swatches legend { font-weight: 500; font-size: .92rem; }
 .field label small { color: var(--muted); font-weight: 400; }
 .field input, .field select, .field textarea {
-  font: inherit; color: var(--ink); background: var(--bg); border: 1px solid var(--line); border-radius: 8px;
-  padding: .7em .85em; width: 100%; min-width: 0;
+  font: inherit; color: var(--ink); background: var(--bg); border: 1px solid var(--line); border-radius: 10px;
+  padding: .75em .9em; width: 100%; min-width: 0; transition: border-color .15s;
 }
-.field textarea { resize: vertical; min-height: 84px; }
+.field input:hover, .field select:hover, .field textarea:hover { border-color: var(--muted); }
+.field textarea { resize: vertical; min-height: 88px; }
 .field input:focus-visible, .field select:focus-visible, .field textarea:focus-visible { outline: 2px solid var(--cognac); outline-offset: 1px; }
 .field.invalid input { border-color: var(--danger); }
 .hint { font-size: .82rem; color: var(--danger); }
+.qty { display: grid; grid-template-columns: 44px 1fr 44px; }
+.qty button { font: 600 1.2rem/1 var(--font-mono); color: var(--ink); background: var(--bg); border: 1px solid var(--line); cursor: pointer; }
+.qty button:first-child { border-radius: 10px 0 0 10px; }
+.qty button:last-child { border-radius: 0 10px 10px 0; }
+.qty button:hover { background: var(--cognac-soft); }
+.field .qty input { border-radius: 0; border-inline: 0; text-align: center; font-family: var(--font-mono); -moz-appearance: textfield; }
+.qty input::-webkit-outer-spin-button, .qty input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
 .swatches { display: flex; flex-wrap: wrap; gap: 8px; border: 0; padding: 0; margin: 0; }
-.swatches legend { font-weight: 500; font-size: .92rem; margin-bottom: 6px; padding: 0; }
+.swatches legend { margin-bottom: 8px; padding: 0; }
 .swatch { position: relative; }
 .swatch input { position: absolute; opacity: 0; inset: 0; margin: 0; cursor: pointer; }
-.swatch span { display: inline-flex; align-items: center; gap: 8px; padding: .45em .9em .45em .5em; border: 1px solid var(--line); border-radius: 999px; font-size: .9rem; cursor: pointer; background: var(--bg); }
-.swatch i { width: 18px; height: 18px; border-radius: 50%; border: 1px solid rgba(0,0,0,.2); }
+.swatch span { display: inline-flex; align-items: center; gap: 8px; padding: .45em 1em .45em .5em; border: 1px solid var(--line); border-radius: 999px; font-size: .9rem; cursor: pointer; background: var(--bg); transition: border-color .15s; }
+.swatch i { width: 20px; height: 20px; border-radius: 50%; box-shadow: inset 0 0 0 1px rgba(0,0,0,.18); }
 .swatch input:checked + span { border-color: var(--cognac); box-shadow: 0 0 0 1px var(--cognac); }
 .swatch input:focus-visible + span { outline: 2px solid var(--cognac); outline-offset: 2px; }
-.total { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; padding-top: 14px; border-top: 1px dashed var(--line); flex-wrap: wrap; }
+.total { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; padding-top: 16px; border-top: 1.5px dashed var(--line); flex-wrap: wrap; }
 .total span { color: var(--muted); }
-.total b { font-family: var(--font-mono); font-size: 1.4rem; font-variant-numeric: tabular-nums; }
+.total b { font-family: var(--font-mono); font-size: 1.6rem; font-variant-numeric: tabular-nums; }
+.slip > .btn { width: 100%; }
 
-.result { display: grid; gap: 12px; padding: 20px; border: 1.5px dashed var(--cognac); border-radius: 12px; background: var(--bg); }
-.result h3 { font-size: 1.15rem; }
-.result pre { margin: 0; white-space: pre-wrap; word-break: break-word; font-family: var(--font-mono); font-size: .85rem; line-height: 1.6; background: var(--surface); padding: 14px; border-radius: 8px; }
+.result { display: grid; gap: 14px; padding: 22px; border: 1.5px dashed var(--cognac); border-radius: 14px; background: var(--bg); }
+.result h3 { font-size: 1.2rem; }
+.result pre { margin: 0; white-space: pre-wrap; word-break: break-word; font-family: var(--font-mono); font-size: .85rem; line-height: 1.65; background: var(--kraft); color: var(--kraft-ink); padding: 16px 18px; border-radius: 8px; }
 .result-actions { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; }
 .copy-status { font-size: .9rem; color: var(--muted); }
 
 /* Подвал */
-.site-footer .wrap { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 8px 24px; padding-block: 28px 40px; color: var(--muted); font-size: .9rem; }
+.site-footer { padding-block: 40px 32px; }
+.site-footer .wordmark { font-family: var(--font-display); font-size: clamp(4rem, 2rem + 12vw, 11rem); line-height: .9; color: transparent; -webkit-text-stroke: 1.5px var(--line); letter-spacing: -.02em; overflow: hidden; }
+.site-footer .meta { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 8px 24px; margin-top: 18px; color: var(--muted); font-size: .9rem; }
 
 /* Рисунки сумок */
-.lth { fill: var(--leather); }
-.lth-d { fill: var(--leather-shade); }
+.b { fill: var(--bag); }
+.bd { fill: var(--bag-d); }
+.shade { fill: #000; opacity: .16; }
+.hi { fill: #fff; opacity: .1; }
 .flt { fill: var(--felt); }
-.strap { fill: none; stroke: var(--leather-shade); stroke-linecap: round; }
+.strap { fill: none; stroke: var(--bag-d); stroke-linecap: round; }
 .stitch { fill: none; stroke: var(--thread); stroke-width: 1.6; stroke-dasharray: 4 3; stroke-linecap: round; }
-.hw { fill: var(--thread); }
-.dim { stroke: var(--muted); stroke-width: 1; fill: none; }
-.dim-t { fill: var(--muted); font-family: var(--font-mono); font-size: 9px; }
+.orn { fill: none; stroke: var(--thread); stroke-width: 2; stroke-linecap: round; }
+.hw { fill: var(--brass); }
+.ring { fill: none; stroke: var(--brass); stroke-width: 2.5; }
+.shadow { fill: #000; opacity: .14; }
 
-@media (max-width: 920px) {
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after { transition: none !important; animation: none !important; }
+}
+@media (max-width: 980px) {
   .catalog { grid-template-columns: repeat(2, 1fr); }
-  .steps { grid-template-columns: repeat(2, 1fr); }
-  .order { grid-template-columns: 1fr; }
+  .steps { grid-template-columns: repeat(2, 1fr); row-gap: 40px; }
+  .steps::before { display: none; }
+  .order { grid-template-columns: 1fr; gap: 40px; }
+  .order-info { position: static; }
 }
-@media (max-width: 720px) {
-  .hero { grid-template-columns: 1fr; padding-block: 36px 48px; gap: 28px; }
-  section { padding-block: 48px; }
+@media (max-width: 760px) {
+  .hero { grid-template-columns: 1fr; padding-block: 36px 48px; gap: 36px; }
+  section { padding-block: 56px; }
 }
-@media (max-width: 560px) {
+@media (max-width: 600px) {
   .catalog { grid-template-columns: 1fr; }
   .steps { grid-template-columns: 1fr; }
   .row { grid-template-columns: 1fr; }
-  .form { padding: 20px; }
+  .slip { padding: 30px 18px 22px; }
   .nav { gap: 4px 14px; font-size: .92rem; }
-  .terms li { grid-template-columns: 6.5rem 1fr; }
+  .nav a.nav-cta { padding: 4px 10px; }
+  .hero-facts { grid-template-columns: repeat(3, auto); gap: 8px 18px; }
+  .hero-facts b { font-size: 1.1rem; }
+  .terms li { grid-template-columns: 7rem 1fr; }
+  .hero-art { padding: 18px; }
+  .hero h1 { font-size: clamp(2rem, 1.2rem + 5vw, 2.6rem); overflow-wrap: anywhere; }
+  .lead { font-size: 1.08rem; }
+}
+@media (max-width: 440px) {
+  .logo small { display: none; }
+  .logo svg { width: 32px; height: 32px; }
+  .site-header .wrap { flex-wrap: nowrap; }
+  .nav { flex-wrap: nowrap; gap: 12px; font-size: .88rem; }
+  .nav a.nav-cta { padding: 3px 9px; }
+  .hero-facts { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px 12px; }
+  .hero-facts span { font-size: .78rem; }
+  .colors .label { min-width: 0; flex-basis: 100%; }
 }
 </style>
 
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+  <filter id="grain" x="0" y="0" width="100%" height="100%">
+    <feTurbulence type="fractalNoise" baseFrequency="1.1" numOctaves="2" seed="4" result="noise"/>
+    <feColorMatrix in="noise" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  .7 0 0 0 -.22" result="dots"/>
+    <feComposite in="dots" in2="SourceAlpha" operator="in" result="grain"/>
+    <feMerge><feMergeNode in="SourceGraphic"/><feMergeNode in="grain"/></feMerge>
+  </filter>
+</svg>
+
 <header class="site-header">
   <div class="wrap">
-    <a class="logo" href="#top" aria-label="Тігіс — на главную"><b>Тігіс</b><span>мастерская сумок</span></a>
+    <a class="logo" href="#top" aria-label="Тігіс — на главную">
+      <svg viewBox="0 0 40 40" aria-hidden="true">
+        <circle cx="20" cy="20" r="18" fill="var(--cognac)"/>
+        <circle cx="20" cy="20" r="14" fill="none" stroke="var(--on-accent)" stroke-width="1.4" stroke-dasharray="3 2.4"/>
+        <path d="M13 14 H27 M20 14 V28" stroke="var(--on-accent)" stroke-width="2.6" stroke-linecap="round"/>
+      </svg>
+      <span><b>Тігіс</b><small>мастерская сумок</small></span>
+    </a>
     <nav class="nav" aria-label="Разделы">
       <a href="#catalog">Каталог</a>
       <a href="#craft">Как мы шьём</a>
-      <a href="#order">Заказ</a>
+      <a href="#order" class="nav-cta">Заказ</a>
     </nav>
   </div>
 </header>
@@ -256,105 +360,108 @@ section { padding-block: 64px; scroll-margin-top: 70px; }
 <main id="top">
   <div class="wrap hero">
     <div>
-      <div class="eyebrow">Кожаные сумки ручной работы · Казахстан</div>
+      <span class="eyebrow">Кожаные сумки ручной работы · Казахстан</span>
       <h1>Сумки, сшитые вручную <em>седельным швом</em></h1>
-      <p class="lead">Режем растительную кожу, пробиваем каждый прокол и шьём двумя иглами. Такой шов не распускается, даже если одна нить перетрётся.</p>
+      <p class="lead">Режем кожу растительного дубления, пробиваем каждый прокол и шьём двумя иглами. Такой шов не распускается, даже если одна нить перетрётся.</p>
       <div class="hero-actions">
-        <a class="btn btn-primary" href="#catalog">Смотреть сумки</a>
+        <a class="btn btn-primary" href="#catalog">Смотреть сумки
+          <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 4v12M5 11l5 5 5-5"/></svg>
+        </a>
         <a class="btn btn-ghost" href="#order">Заказать свою</a>
       </div>
       <div class="hero-facts">
-        <span><b>6</b> моделей</span>
-        <span><b>7–10</b> дней на пошив</span>
-        <span><b>2 года</b> гарантии на шов</span>
+        <div><b>6</b><span>моделей</span></div>
+        <div><b>7–10</b><span>дней на пошив</span></div>
+        <div><b>2 года</b><span>гарантия на шов</span></div>
       </div>
     </div>
-    <div class="hero-art" aria-hidden="true">
-      <svg viewBox="0 0 260 220">
-        <path class="strap" stroke-width="7" d="M88 74 C88 18 128 18 128 74"/>
-        <path class="strap" stroke-width="7" d="M132 74 C132 18 172 18 172 74"/>
-        <path class="lth" d="M60 74 H200 L212 190 H48 Z"/>
-        <path class="lth-d" d="M60 74 H200 L201 86 H59 Z"/>
-        <path class="stitch" d="M67 92 H193 L203 182 H57 Z"/>
-        <circle class="hw" cx="88" cy="80" r="3"/><circle class="hw" cx="128" cy="80" r="3"/>
-        <circle class="hw" cx="132" cy="80" r="3"/><circle class="hw" cx="172" cy="80" r="3"/>
-        <path class="dim" d="M48 204 H212 M48 199 V209 M212 199 V209"/>
-        <text class="dim-t" x="130" y="217" text-anchor="middle">38 см</text>
-        <path class="dim" d="M226 74 V190 M221 74 H231 M221 190 H231"/>
-        <text class="dim-t" x="236" y="136">32 см</text>
-        <text class="dim-t" x="18" y="140">2,2 мм</text>
-        <path class="dim" d="M34 144 L54 160" stroke-dasharray="2 2"/>
-      </svg>
+
+    <div class="hero-art felt" aria-hidden="true">
+      <svg viewBox="0 0 320 290" id="hero-svg"></svg>
+      <div class="caption"><span>Тоут «Базар»</span><span>кожа 2,2 мм · 14 ч работы</span></div>
     </div>
   </div>
 
-  <div class="seam-wrap"><hr class="seam"></div>
+  <div class="seam"></div>
+  <div class="wrap materials" aria-label="Материалы">
+    <span>Кожа растительного дубления</span>
+    <span>Вощёная нить Ø 0,8 мм</span>
+    <span>Шаг стежка 4 мм</span>
+    <span>Войлок из овечьей шерсти</span>
+    <span>Латунная фурнитура</span>
+  </div>
+  <div class="seam"></div>
 
   <section id="catalog">
     <div class="wrap">
       <div class="section-head">
         <div>
-          <div class="eyebrow">Каталог</div>
-          <h2>Шесть моделей на каждый день</h2>
+          <span class="eyebrow">Каталог</span>
+          <h2>Шесть моделей на&nbsp;каждый день</h2>
         </div>
-        <p>Каждая сумка шьётся под заказ. Размер, толщина кожи и время работы указаны для каждой модели.</p>
+        <p>Каждая сумка шьётся под заказ. Выберите цвет кожи прямо на карточке: он перейдёт в форму заказа.</p>
       </div>
       <div class="catalog" id="catalog-grid"></div>
     </div>
   </section>
 
-  <div class="seam-wrap"><hr class="seam"></div>
-
-  <section id="craft">
+  <section id="craft" class="band felt">
     <div class="wrap">
       <div class="section-head">
         <div>
-          <div class="eyebrow">Как мы шьём</div>
-          <h2>Четыре шага от кожи до сумки</h2>
+          <span class="eyebrow">Как мы шьём</span>
+          <h2>Четыре шага от&nbsp;кожи до&nbsp;сумки</h2>
         </div>
         <p>Без швейной машинки. Одна сумка занимает от 6 до 14 часов работы мастера.</p>
       </div>
       <ol class="steps">
         <li>
-          <div class="step-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20 L20 4"/><path d="M4 4 h10 v6"/><path d="M4 4 v16 h16" stroke-dasharray="2 2"/></svg></div>
+          <span class="hole">1</span>
           <h3>Выкройка</h3>
-          <p>Переносим детали с лекал на кожу и вырезаем ножом по линейке. Направление волокон учитываем, чтобы сумка не тянулась.</p>
+          <p>Переносим детали с лекал на кожу и вырезаем ножом по линейке. Учитываем направление волокон, чтобы сумка не тянулась.</p>
+          <span class="stat">± 0,5 мм точность реза</span>
         </li>
         <li>
-          <div class="step-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M3 18 H21"/><path d="M6 6 V14 M10 6 V14 M14 6 V14 M18 6 V14"/><path d="M4 6 H20"/></svg></div>
+          <span class="hole">2</span>
           <h3>Пробивка</h3>
-          <p>Пробойником с шагом 4 мм отмечаем проколы вдоль края. Ровный шаг делает шов аккуратным.</p>
+          <p>Пробойником отмечаем проколы вдоль края. Ровный шаг делает шов аккуратным и прочным.</p>
+          <span class="stat">шаг 4 мм · ~600 проколов</span>
         </li>
         <li>
-          <div class="step-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M3 12 L7 9 M8 12 L12 9 M13 12 L17 9 M18 12 L21 9.8"/><path d="M3 15 H21" stroke-dasharray="2 3"/></svg></div>
+          <span class="hole">3</span>
           <h3>Седельный шов</h3>
           <p>Шьём вощёной нитью двумя иглами навстречу друг другу. Каждый стежок затянут с обеих сторон.</p>
+          <span class="stat">2 иглы · 1 нить</span>
         </li>
         <li>
-          <div class="step-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><rect x="4" y="8" width="16" height="8" rx="4"/><path d="M8 12 H16"/></svg></div>
+          <span class="hole">4</span>
           <h3>Обработка торцов</h3>
           <p>Срезаем фаску, шлифуем и полируем торцы с воском, пока край не станет гладким и плотным.</p>
+          <span class="stat">3 слоя воска</span>
         </li>
       </ol>
     </div>
   </section>
 
-  <div class="seam-wrap"><hr class="seam"></div>
-
   <section id="order">
     <div class="wrap order">
-      <div>
-        <div class="eyebrow">Заказ</div>
-        <h2 style="font-size: var(--step-2); margin-top: 8px;">Сроки и гарантия</h2>
+      <div class="order-info">
+        <span class="eyebrow">Заказ</span>
+        <h2>Сроки и гарантия</h2>
         <ul class="terms">
           <li><span class="num">7–10 дн.</span><span>шьём изделие под заказ</span></li>
           <li><span class="num">2–5 дн.</span><span>доставка по Казахстану</span></li>
           <li><span class="num">2 года</span><span>гарантия на шов</span></li>
         </ul>
-        <p class="note">Заявка не отправляется автоматически. Заполните форму, скопируйте готовый текст заказа и отправьте его мастеру в мессенджер.</p>
+        <p class="note">
+          <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><circle cx="10" cy="10" r="8"/><path d="M10 9v5M10 6v.5"/></svg>
+          <span>Заявка не отправляется автоматически. Заполните бланк, скопируйте готовый текст заказа и отправьте его мастеру в мессенджер.</span>
+        </p>
       </div>
 
-      <form class="form" id="order-form" novalidate>
+      <form class="slip" id="order-form" novalidate>
+        <div class="slip-head"><h3>Бланк заказа</h3><span>мастерская «Тігіс»</span></div>
+
         <div class="row">
           <div class="field">
             <label for="f-model">Модель</label>
@@ -362,7 +469,11 @@ section { padding-block: 64px; scroll-margin-top: 70px; }
           </div>
           <div class="field">
             <label for="f-qty">Количество</label>
-            <input id="f-qty" name="qty" type="number" min="1" max="20" value="1" inputmode="numeric">
+            <div class="qty">
+              <button type="button" id="qty-minus" aria-label="Меньше">−</button>
+              <input id="f-qty" name="qty" type="number" min="1" max="20" value="1" inputmode="numeric">
+              <button type="button" id="qty-plus" aria-label="Больше">+</button>
+            </div>
           </div>
         </div>
 
@@ -390,7 +501,7 @@ section { padding-block: 64px; scroll-margin-top: 70px; }
 
         <div class="total"><span>Итого</span><b id="f-total">68 000 ₸</b></div>
 
-        <button class="btn btn-primary" type="submit">Собрать заказ</button>
+        <button class="btn btn-primary" type="submit">Собрать текст заказа</button>
 
         <div class="result" id="result" hidden>
           <h3>Текст заказа готов</h3>
@@ -405,12 +516,14 @@ section { padding-block: 64px; scroll-margin-top: 70px; }
   </section>
 </main>
 
-<div class="seam-wrap"><hr class="seam"></div>
-
 <footer class="site-footer">
+  <div class="seam"></div>
   <div class="wrap">
-    <span>© 2026 Мастерская «Тігіс». Данные на сайте примерные.</span>
-    <span class="mono">Пн–Сб 10:00–19:00 · Вс выходной</span>
+    <div class="wordmark" aria-hidden="true">Тігіс</div>
+    <div class="meta">
+      <span>© 2026 Мастерская «Тігіс». Модели и цены на сайте примерные.</span>
+      <span class="mono">Пн–Сб 10:00–19:00 · Вс выходной</span>
+    </div>
   </div>
 </footer>
 
@@ -419,65 +532,124 @@ section { padding-block: 64px; scroll-margin-top: 70px; }
 const PRODUCTS = [
   { id: "bazar", name: "Тоут «Базар»", shape: "tote", desc: "Вместительная сумка на плечо для города и рынка. Внутри карман для телефона и ключей.", size: "38 × 32 × 12 см", leather: "2,2 мм", hours: 14, price: 68000 },
   { id: "zhol", name: "Кросс-боди «Жол»", shape: "crossbody", desc: "Небольшая сумка через плечо с клапаном и регулируемым ремнём.", size: "22 × 16 × 6 см", leather: "1,8 мм", hours: 8, price: 42000 },
-  { id: "oyu", name: "Клатч «Ою» (кожа + войлок)", shape: "clutch", desc: "Клатч из кожи со вставкой из войлока с орнаментом ою.", size: "26 × 15 × 2 см", leather: "1,8 мм", hours: 10, price: 36000 },
+  { id: "oyu", name: "Клатч «Ою»", shape: "clutch", desc: "Клатч из кожи со вставкой из войлока, на которой вышит орнамент ою.", size: "26 × 15 × 2 см", leather: "1,8 мм + войлок", hours: 10, price: 36000 },
   { id: "qap", name: "Мешок «Қап»", shape: "sack", desc: "Мягкая сумка-мешок на кожаном шнурке. Затягивается одним движением.", size: "28 × 30 × 18 см", leather: "1,6 мм", hours: 9, price: 49000 },
   { id: "sapar", name: "Рюкзак «Сапар»", shape: "backpack", desc: "Городской рюкзак с клапаном и внешним карманом. Помещается ноутбук 13″.", size: "30 × 40 × 14 см", leather: "2,2 мм", hours: 14, price: 79000 },
   { id: "kishi", name: "Поясная «Кіші»", shape: "belt", desc: "Компактная сумка на пояс или через грудь для самого нужного.", size: "20 × 12 × 5 см", leather: "1,8 мм", hours: 6, price: 28000 }
 ];
 
 const COLORS = [
-  { id: "cognac", name: "коньяк", hex: "#a65d2c" },
-  { id: "chocolate", name: "шоколад", hex: "#5a3420" },
-  { id: "natural", name: "натуральный", hex: "#d8b48a" },
-  { id: "black", name: "чёрный", hex: "#1c1c1c" }
+  { id: "cognac", name: "коньяк", hex: "#a65d2c", dark: "#74390f" },
+  { id: "chocolate", name: "шоколад", hex: "#5e3824", dark: "#3a2013" },
+  { id: "natural", name: "натуральный", hex: "#cfa577", dark: "#9c7246" },
+  { id: "black", name: "чёрный", hex: "#2b2927", dark: "#121110" }
 ];
 
 const SHAPES = {
   tote: `
-    <path class="strap" stroke-width="6" d="M68 50 C68 8 96 8 96 50"/>
-    <path class="strap" stroke-width="6" d="M104 50 C104 8 132 8 132 50"/>
-    <path class="lth" d="M44 50 H156 L166 148 H34 Z"/>
-    <path class="stitch" d="M51 60 H149 L157 140 H43 Z"/>`,
+    <ellipse class="shadow" cx="100" cy="160" rx="72" ry="6"/>
+    <path class="strap" stroke-width="7" d="M70 52 C70 6 98 6 98 52"/>
+    <path class="strap" stroke-width="7" d="M102 52 C102 6 130 6 130 52"/>
+    <g filter="url(#grain)">
+      <path class="b" d="M42 52 H158 L168 152 Q168 157 163 157 H37 Q32 157 32 152 Z"/>
+      <path class="bd" d="M42 52 H158 L159.4 66 H40.6 Z"/>
+      <path class="shade" d="M124 66 H159.4 L168 152 Q168 157 163 157 H136 Z"/>
+      <path class="hi" d="M46 70 H70 L62 150 H40 Z"/>
+    </g>
+    <path class="stitch" d="M48 74 H152 L160 148 H40 Z"/>
+    <path class="stitch" d="M44 59 H156"/>
+    <circle class="hw" cx="70" cy="58" r="3"/><circle class="hw" cx="98" cy="58" r="3"/>
+    <circle class="hw" cx="102" cy="58" r="3"/><circle class="hw" cx="130" cy="58" r="3"/>`,
   crossbody: `
-    <path class="strap" stroke-width="5" d="M54 70 C40 -10 160 -10 146 70"/>
-    <rect class="lth" x="48" y="62" width="104" height="80" rx="10"/>
-    <path class="lth-d" d="M48 72 Q48 62 58 62 H142 Q152 62 152 72 V104 Q100 122 48 104 Z"/>
-    <path class="stitch" d="M56 72 H144 V100 Q100 115 56 100 Z"/>
-    <circle class="hw" cx="100" cy="108" r="5"/>`,
+    <ellipse class="shadow" cx="100" cy="158" rx="60" ry="5"/>
+    <path class="strap" stroke-width="5" d="M52 70 C26 -10 174 -10 148 70"/>
+    <circle class="ring" cx="52" cy="70" r="5"/><circle class="ring" cx="148" cy="70" r="5"/>
+    <g filter="url(#grain)">
+      <rect class="b" x="46" y="68" width="108" height="86" rx="12"/>
+      <path class="shade" d="M126 68 H142 Q154 68 154 80 V142 Q154 154 142 154 H132 Z"/>
+      <path class="bd" d="M46 82 Q46 68 60 68 H140 Q154 68 154 82 V110 Q100 130 46 110 Z"/>
+      <path class="hi" d="M52 84 Q52 74 62 74 H82 L76 112 Q62 110 52 106 Z"/>
+    </g>
+    <path class="stitch" d="M54 82 Q54 76 62 76 H138 Q146 76 146 82 V105 Q100 121 54 105 Z"/>
+    <path class="stitch" d="M54 124 V142 Q54 146 58 146 H142 Q146 146 146 142 V124"/>
+    <circle class="hw" cx="100" cy="115" r="5.5"/>`,
   clutch: `
-    <rect class="lth" x="26" y="50" width="148" height="78" rx="6"/>
-    <rect class="flt" x="26" y="50" width="148" height="34" rx="6"/>
-    <path class="stitch" d="M34 90 H166 M34 120 H166"/>
-    <path fill="none" stroke="var(--thread)" stroke-width="2" stroke-linecap="round" d="M60 67 c0 -9 12 -9 12 0 c0 6 -8 6 -8 1 M140 67 c0 -9 -12 -9 -12 0 c0 6 8 6 8 1 M72 67 H128 M100 58 v18"/>`,
+    <ellipse class="shadow" cx="100" cy="142" rx="76" ry="5"/>
+    <g filter="url(#grain)">
+      <rect class="b" x="24" y="52" width="152" height="84" rx="8"/>
+      <path class="shade" d="M144 92 H176 V128 Q176 136 168 136 H152 Z"/>
+      <path class="hi" d="M30 96 H62 L56 132 H30 Z"/>
+    </g>
+    <path class="flt" d="M24 60 Q24 52 32 52 H168 Q176 52 176 60 V92 H24 Z"/>
+    <path class="orn" d="M100 62 V84 M100 73 C92 60 76 62 78 74 C79 81 88 81 88 75 M100 73 C108 60 124 62 122 74 C121 81 112 81 112 75"/>
+    <path class="orn" d="M40 72 H64 M136 72 H160" stroke-dasharray="2 4"/>
+    <path class="stitch" d="M30 98 H170 M30 130 H170"/>`,
   sack: `
-    <path class="lth" d="M56 48 H144 L160 138 Q100 154 40 138 Z"/>
-    <path class="lth-d" d="M56 48 H144 L146 60 H54 Z"/>
-    <path class="strap" stroke-width="3" d="M58 56 Q100 66 142 56"/>
-    <path class="strap" stroke-width="3" d="M100 62 L94 88 M100 62 L108 86"/>
-    <circle class="lth-d" cx="94" cy="90" r="4"/><circle class="lth-d" cx="108" cy="88" r="4"/>
-    <path class="stitch" d="M62 70 L50 132 M138 70 L150 132"/>`,
+    <ellipse class="shadow" cx="100" cy="156" rx="66" ry="6"/>
+    <path class="strap" stroke-width="5" d="M62 50 C70 0 130 0 138 50"/>
+    <g filter="url(#grain)">
+      <path class="b" d="M58 46 H142 L162 142 Q100 162 38 142 Z"/>
+      <path class="shade" d="M120 60 L142 46 L162 142 Q150 146 134 148 Z"/>
+      <path class="bd" d="M58 46 H142 L145 60 H55 Z"/>
+      <path class="hi" d="M60 66 L78 64 L68 140 L46 137 Z"/>
+    </g>
+    <path class="strap" stroke-width="3" d="M56 54 Q100 64 144 54"/>
+    <path class="strap" stroke-width="3" d="M100 60 L92 94 M100 60 L110 92"/>
+    <circle class="bd" cx="92" cy="97" r="4.5"/><circle class="bd" cx="110" cy="95" r="4.5"/>
+    <path class="stitch" d="M62 68 L48 136 M138 68 L152 136"/>`,
   backpack: `
-    <path class="strap" stroke-width="5" d="M86 34 C86 14 114 14 114 34"/>
-    <rect class="lth" x="52" y="32" width="96" height="118" rx="22"/>
-    <path class="lth-d" d="M52 56 Q52 32 76 32 H124 Q148 32 148 56 V84 Q100 98 52 84 Z"/>
-    <rect class="lth-d" x="72" y="104" width="56" height="36" rx="6"/>
-    <path class="stitch" d="M60 58 Q60 40 78 40 H122 Q140 40 140 58 V80 Q100 92 60 80 Z"/>
-    <path class="stitch" d="M78 110 H122 V134 H78 Z"/>
-    <rect class="hw" x="96" y="86" width="8" height="12" rx="2"/>`,
+    <ellipse class="shadow" cx="100" cy="156" rx="56" ry="5"/>
+    <path class="strap" stroke-width="6" d="M86 34 C86 12 114 12 114 34"/>
+    <g filter="url(#grain)">
+      <rect class="b" x="52" y="30" width="96" height="122" rx="22"/>
+      <path class="shade" d="M122 30 Q148 30 148 56 V130 Q148 152 126 152 H118 Z"/>
+      <path class="bd" d="M52 54 Q52 30 76 30 H124 Q148 30 148 54 V84 Q100 100 52 84 Z"/>
+      <rect class="bd" x="70" y="104" width="60" height="38" rx="7"/>
+      <path class="hi" d="M58 90 L74 94 L70 146 Q58 142 58 130 Z"/>
+    </g>
+    <path class="stitch" d="M60 56 Q60 38 78 38 H122 Q140 38 140 56 V79 Q100 92 60 79 Z"/>
+    <path class="stitch" d="M76 110 H124 V136 H76 Z"/>
+    <rect class="hw" x="95" y="86" width="10" height="13" rx="2"/>`,
   belt: `
-    <path class="strap" stroke-width="8" d="M6 92 Q100 70 194 92"/>
-    <rect class="lth" x="46" y="58" width="108" height="64" rx="30"/>
-    <path class="stitch" d="M58 70 H142 M54 112 H146" />
-    <path stroke="var(--leather-shade)" stroke-width="3" d="M62 82 H138"/>
-    <rect class="hw" x="132" y="78" width="10" height="8" rx="2"/>`
+    <ellipse class="shadow" cx="100" cy="136" rx="56" ry="5"/>
+    <path class="strap" stroke-width="9" d="M4 98 Q100 72 196 98"/>
+    <rect class="ring" x="20" y="84" width="14" height="16" rx="3"/>
+    <g filter="url(#grain)">
+      <rect class="b" x="44" y="58" width="112" height="70" rx="32"/>
+      <path class="shade" d="M118 58 H124 Q156 58 156 90 V96 Q156 128 124 128 H118 Z"/>
+      <path class="hi" d="M60 66 Q50 76 50 94 Q50 112 60 120 L68 118 Q60 108 60 94 Q60 80 68 70 Z"/>
+    </g>
+    <path class="stitch" d="M64 67 H136 M60 119 H140"/>
+    <path d="M62 85 H138" stroke="var(--bag-d)" stroke-width="3" stroke-linecap="round"/>
+    <rect class="hw" x="132" y="80" width="11" height="10" rx="2"/>`
 };
 
 const fmt = n => String(n).replace(/\B(?=(\d{3})+(?!\d))/g, " ") + " ₸";
+const bagVars = c => `--bag:${c.hex};--bag-d:${c.dark}`;
 
+// Главный экран: большой тоут с биркой
+document.getElementById("hero-svg").innerHTML = `
+  <g style="${bagVars(COLORS[0])}" transform="translate(18 40) scale(1.42)">${SHAPES.tote}</g>
+  <path d="M200 52 C214 60 226 70 236 86" fill="none" stroke="var(--thread)" stroke-width="1.5"/>
+  <g class="tag-swing">
+    <g transform="translate(236 86) rotate(8)">
+      <path d="M-26 6 L-14 -6 H26 V70 H-26 Z" fill="var(--kraft)"/>
+      <circle cx="-14" cy="6" r="3.5" fill="var(--felt-bg)"/>
+      <text x="0" y="28" text-anchor="middle" fill="var(--kraft-ink)" font-family="JetBrains Mono, monospace" font-size="8.5">38×32×12</text>
+      <text x="0" y="40" text-anchor="middle" fill="var(--kraft-ink)" font-family="JetBrains Mono, monospace" font-size="7.5" opacity=".7">см</text>
+      <path d="M-18 48 H18" stroke="var(--kraft-ink)" stroke-dasharray="2 2" opacity=".5"/>
+      <text x="0" y="61" text-anchor="middle" fill="var(--kraft-ink)" font-family="JetBrains Mono, monospace" font-weight="600" font-size="9">68 000 ₸</text>
+    </g>
+  </g>`;
+
+// Карточки каталога
 const grid = document.getElementById("catalog-grid");
 grid.innerHTML = PRODUCTS.map(p => `
-  <article class="card">
-    <div class="card-art" aria-hidden="true"><svg viewBox="0 0 200 160">${SHAPES[p.shape]}</svg></div>
+  <article class="card" data-id="${p.id}" data-color="${COLORS[0].id}">
+    <div class="card-art" aria-hidden="true">
+      <span class="hours">${p.hours} ч работы</span>
+      <svg viewBox="0 0 200 170">${SHAPES[p.shape]}</svg>
+    </div>
     <div class="card-body">
       <h3>${p.name}</h3>
       <p class="desc">${p.desc}</p>
@@ -486,12 +658,25 @@ grid.innerHTML = PRODUCTS.map(p => `
         <dt>Кожа</dt><dd>${p.leather}</dd>
         <dt>Работа</dt><dd>${p.hours} ч</dd>
       </dl>
+      <div class="colors" role="group" aria-label="Цвет кожи: ${p.name}">
+        <span class="label">Цвет: <b>${COLORS[0].name}</b></span>
+        ${COLORS.map((c, i) => `<button type="button" class="dot" style="background:${c.hex}" data-color="${c.id}" aria-label="${c.name}" aria-pressed="${i === 0}"></button>`).join("")}
+      </div>
       <div class="card-foot">
-        <span class="price">${fmt(p.price)}</span>
+        <span class="price-tag">${fmt(p.price)}</span>
         <button class="btn btn-primary" type="button" data-order="${p.id}" aria-label="Заказать: ${p.name}">Заказать</button>
       </div>
     </div>
   </article>`).join("");
+
+function paintCard(card, colorId) {
+  const c = COLORS.find(x => x.id === colorId) || COLORS[0];
+  card.dataset.color = c.id;
+  card.style.setProperty("--bag", c.hex);
+  card.style.setProperty("--bag-d", c.dark);
+  card.querySelector(".colors b").textContent = c.name;
+  card.querySelectorAll(".dot").forEach(d => d.setAttribute("aria-pressed", String(d.dataset.color === c.id)));
+}
 
 // Форма
 const form = document.getElementById("order-form");
@@ -523,14 +708,21 @@ function updateTotal() {
 [modelSel, qtyIn].forEach(el => el.addEventListener("input", updateTotal));
 form.addEventListener("change", e => { if (e.target.name === "color") result.hidden = true; });
 qtyIn.addEventListener("blur", () => { qtyIn.value = qty(); updateTotal(); });
+document.getElementById("qty-minus").addEventListener("click", () => { qtyIn.value = Math.max(1, qty() - 1); updateTotal(); });
+document.getElementById("qty-plus").addEventListener("click", () => { qtyIn.value = Math.min(20, qty() + 1); updateTotal(); });
 
 grid.addEventListener("click", e => {
+  const dot = e.target.closest(".dot");
+  if (dot) { paintCard(dot.closest(".card"), dot.dataset.color); return; }
   const btn = e.target.closest("[data-order]");
   if (!btn) return;
+  const card = btn.closest(".card");
   modelSel.value = btn.dataset.order;
+  const radio = document.getElementById("f-color-" + card.dataset.color);
+  if (radio) radio.checked = true;
   updateTotal();
   document.getElementById("order").scrollIntoView({ block: "start" });
-  setTimeout(() => modelSel.focus({ preventScroll: true }), 350);
+  setTimeout(() => modelSel.focus({ preventScroll: true }), 400);
 });
 
 function check(input, fieldId, hintId) {
@@ -552,7 +744,8 @@ form.addEventListener("submit", e => {
 
   const p = product();
   const n = qty();
-  const color = COLORS.find(c => c.id === (form.querySelector("input[name=color]:checked") || {}).value) || COLORS[0];
+  const checked = form.querySelector("input[name=color]:checked");
+  const color = COLORS.find(c => checked && c.id === checked.value) || COLORS[0];
   const lines = [
     "Здравствуйте! Хочу заказать сумку в мастерской «Тігіс».",
     "",
@@ -574,17 +767,16 @@ form.addEventListener("submit", e => {
 });
 
 copyBtn.addEventListener("click", () => {
-  const text = resultText.textContent;
   const fallback = () => {
     const range = document.createRange();
     range.selectNodeContents(resultText);
     const sel = window.getSelection();
     sel.removeAllRanges();
     sel.addRange(range);
-    copyStatus.textContent = "Текст выделен. Нажмите Ctrl+C или «Копировать» в меню.";
+    copyStatus.textContent = "Текст выделен. Нажмите Ctrl+C, чтобы скопировать.";
   };
   try {
-    navigator.clipboard.writeText(text)
+    navigator.clipboard.writeText(resultText.textContent)
       .then(() => { copyStatus.textContent = "Скопировано. Отправьте текст мастеру в мессенджер."; })
       .catch(fallback);
   } catch (err) { fallback(); }
