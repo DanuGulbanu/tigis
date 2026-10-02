@@ -1,3 +1,8 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Мастерская «Тігіс»</title>
 <meta name="description" content="Кожаные сумки ручной работы, сшитые седельным швом. Каталог и заказ.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -55,6 +60,7 @@
 * { box-sizing: border-box; }
 html { scroll-behavior: smooth; }
 body {
+  margin: 0;
   background: var(--bg); color: var(--ink);
   font-family: var(--font-body); font-size: var(--step-0); line-height: 1.6;
   padding-inline: 16px; overflow-x: hidden;
@@ -329,6 +335,8 @@ section { padding-block: 80px; scroll-margin-top: 70px; }
   .colors .label { min-width: 0; flex-basis: 100%; }
 }
 </style>
+</head>
+<body>
 
 <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
   <filter id="grain" x="0" y="0" width="100%" height="100%">
@@ -784,3 +792,5 @@ copyBtn.addEventListener("click", () => {
 
 updateTotal();
 </script>
+</body>
+</html>
