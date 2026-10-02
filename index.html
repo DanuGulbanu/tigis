@@ -1,0 +1,594 @@
+<title>Мастерская «Тігіс»</title>
+<meta name="description" content="Кожаные сумки ручной работы, сшитые седельным швом. Каталог и заказ.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Golos+Text:wght@400;500;600&family=JetBrains+Mono:wght@400;600&family=Yeseva+One&display=swap">
+<style>
+/* Layout: одна колонка шириной до 1120px, блоки разделены «швом» — косой пунктирной строчкой */
+:root {
+  --bg: #e4eae3;
+  --surface: #f1f5ef;
+  --ink: #1d2420;
+  --muted: #56625a;
+  --line: #bfcabf;
+  --cognac: #8f4a1f;
+  --cognac-soft: #e9d6c4;
+  --indigo: #2f3c78;
+  --leather: #a65d2c;
+  --leather-shade: #7f4219;
+  --felt: #34428a;
+  --thread: #f3e7cf;
+  --on-accent: #fffaf2;
+  --danger: #a3271b;
+
+  --font-display: "Yeseva One", Georgia, "Times New Roman", serif;
+  --font-body: "Golos Text", "Segoe UI", system-ui, -apple-system, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, "Cascadia Mono", Consolas, monospace;
+
+  --step--1: 0.875rem;
+  --step-0: 1rem;
+  --step-1: 1.25rem;
+  --step-2: 1.6rem;
+  --step-3: clamp(2rem, 1.3rem + 3vw, 3.4rem);
+  --radius: 10px;
+  --wrap: 1120px;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #151a17; --surface: #1d241f; --ink: #e6ece5; --muted: #9ba79f; --line: #34403a;
+    --cognac: #d9945e; --cognac-soft: #3a2a1f; --indigo: #9ba8ea;
+    --leather: #b26a36; --leather-shade: #82461d; --felt: #4352a0; --thread: #f0e2c6;
+    --on-accent: #1b130c; --danger: #f08a7e;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #151a17; --surface: #1d241f; --ink: #e6ece5; --muted: #9ba79f; --line: #34403a;
+  --cognac: #d9945e; --cognac-soft: #3a2a1f; --indigo: #9ba8ea;
+  --leather: #b26a36; --leather-shade: #82461d; --felt: #4352a0; --thread: #f0e2c6;
+  --on-accent: #1b130c; --danger: #f08a7e;
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after { transition: none !important; animation: none !important; }
+}
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: var(--step-0);
+  line-height: 1.6;
+  padding-inline: 16px;
+  overflow-x: hidden;
+}
+.wrap { max-width: var(--wrap); margin-inline: auto; }
+h1, h2, h3 { font-family: var(--font-display); font-weight: 400; line-height: 1.15; text-wrap: balance; margin: 0; }
+p { margin: 0; }
+a { color: inherit; }
+:focus-visible { outline: 2px solid var(--cognac); outline-offset: 3px; border-radius: 4px; }
+
+/* Шов — фирменный разделитель */
+.seam {
+  height: 6px;
+  margin-block: 0;
+  border: 0;
+  background: repeating-linear-gradient(115deg, var(--cognac) 0 7px, transparent 7px 13px);
+  -webkit-mask: linear-gradient(#000 0 0) center / 100% 2px no-repeat;
+          mask: linear-gradient(#000 0 0) center / 100% 2px no-repeat;
+  opacity: .75;
+}
+.seam-wrap { max-width: var(--wrap); margin-inline: auto; position: relative; }
+.seam-wrap::before, .seam-wrap::after {
+  content: ""; position: absolute; top: 50%; width: 5px; height: 5px; border-radius: 50%;
+  background: var(--cognac); transform: translateY(-50%); opacity: .75;
+}
+.seam-wrap::before { left: -10px; }
+.seam-wrap::after { right: -10px; }
+
+.mono { font-family: var(--font-mono); font-variant-numeric: tabular-nums; }
+.eyebrow {
+  font-family: var(--font-mono); font-size: 0.75rem; letter-spacing: .12em; text-transform: uppercase;
+  color: var(--cognac);
+}
+
+/* Кнопки */
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: .5em;
+  font: 600 var(--step-0)/1 var(--font-body);
+  padding: .9em 1.4em; border-radius: 999px; cursor: pointer; text-decoration: none;
+  border: 1.5px solid var(--cognac); transition: background .2s, color .2s, transform .2s;
+}
+.btn-primary { background: var(--cognac); color: var(--on-accent); }
+.btn-primary:hover { background: transparent; color: var(--cognac); }
+.btn-ghost { background: transparent; color: var(--cognac); border-style: dashed; }
+.btn-ghost:hover { background: var(--cognac-soft); }
+.btn:active { transform: translateY(1px); }
+
+/* Шапка */
+.site-header {
+  position: sticky; top: env(safe-area-inset-top, 0px); z-index: 10;
+  background: color-mix(in srgb, var(--bg) 88%, transparent);
+  -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px);
+  margin-inline: -16px; padding-inline: 16px;
+  border-bottom: 1px dashed var(--line);
+}
+.site-header .wrap { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding-block: 14px; flex-wrap: wrap; }
+.logo { display: flex; align-items: baseline; gap: .5em; text-decoration: none; }
+.logo b { font-family: var(--font-display); font-weight: 400; font-size: 1.6rem; color: var(--ink); }
+.logo span { font-family: var(--font-mono); font-size: .7rem; color: var(--muted); letter-spacing: .08em; text-transform: uppercase; }
+.nav { display: flex; gap: 4px 20px; flex-wrap: wrap; }
+.nav a { text-decoration: none; color: var(--muted); font-weight: 500; padding-block: 4px; border-bottom: 1.5px dashed transparent; }
+.nav a:hover { color: var(--ink); border-bottom-color: var(--cognac); }
+
+/* Главный экран */
+.hero { display: grid; grid-template-columns: 1.1fr 1fr; gap: 40px; align-items: center; padding-block: 56px 64px; }
+.hero > * { min-width: 0; }
+.hero h1 { font-size: var(--step-3); margin-block: 14px 18px; }
+.hero h1 em { font-style: normal; color: var(--cognac); }
+.hero p.lead { font-size: var(--step-1); color: var(--muted); max-width: 34ch; line-height: 1.5; }
+.hero-actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 28px; }
+.hero-facts { display: flex; flex-wrap: wrap; gap: 8px 24px; margin-top: 32px; font-family: var(--font-mono); font-size: var(--step--1); color: var(--muted); }
+.hero-facts b { color: var(--ink); font-weight: 600; }
+.hero-art { position: relative; background: var(--surface); border-radius: 18px; padding: 24px; border: 1px dashed var(--line); }
+.hero-art svg { display: block; width: 100%; height: auto; }
+
+/* Секции */
+section { padding-block: 64px; scroll-margin-top: 70px; }
+.section-head { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: end; gap: 12px 32px; margin-bottom: 32px; }
+.section-head h2 { font-size: var(--step-2); margin-top: 8px; }
+.section-head p { color: var(--muted); max-width: 46ch; }
+
+/* Каталог */
+.catalog { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+.card {
+  display: flex; flex-direction: column; background: var(--surface); border-radius: var(--radius);
+  border: 1px solid var(--line); overflow: hidden; min-width: 0;
+}
+.card-art { aspect-ratio: 5 / 4; max-width: 100%; display: grid; place-items: center; padding: 16px;
+  background-image: radial-gradient(var(--line) 1px, transparent 1px); background-size: 14px 14px; border-bottom: 1px dashed var(--line); }
+.card-art svg { width: 82%; height: auto; }
+.card-body { display: flex; flex-direction: column; gap: 12px; padding: 20px; flex: 1; }
+.card h3 { font-size: var(--step-1); }
+.card .desc { color: var(--muted); font-size: .95rem; }
+.specs { display: grid; grid-template-columns: auto 1fr; gap: 4px 14px; margin: 0; font-family: var(--font-mono); font-size: .8rem; font-variant-numeric: tabular-nums; }
+.specs dt { color: var(--muted); }
+.specs dd { margin: 0; text-align: right; }
+.card-foot { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-top: auto; padding-top: 14px; border-top: 1px dashed var(--line); }
+.price { font-family: var(--font-mono); font-weight: 600; font-size: 1.15rem; font-variant-numeric: tabular-nums; }
+.card .btn { padding: .7em 1.2em; font-size: .95rem; }
+
+/* Как мы шьём */
+.steps { display: grid; grid-template-columns: repeat(4, 1fr); gap: 28px; counter-reset: step; list-style: none; margin: 0; padding: 0; }
+.steps li { display: flex; flex-direction: column; gap: 10px; min-width: 0; }
+.step-icon { width: 56px; height: 56px; border-radius: 50%; border: 1.5px dashed var(--cognac); display: grid; place-items: center; color: var(--cognac); }
+.step-icon svg { width: 28px; height: 28px; }
+.steps h3 { font-size: 1.2rem; }
+.steps h3::before { counter-increment: step; content: counter(step) " · "; font-family: var(--font-mono); font-size: .8rem; color: var(--muted); vertical-align: middle; }
+.steps p { color: var(--muted); font-size: .95rem; }
+
+/* Заказ */
+.order { display: grid; grid-template-columns: 1fr 1.4fr; gap: 40px; align-items: start; }
+.order > * { min-width: 0; }
+.terms { display: grid; gap: 14px; list-style: none; padding: 0; margin: 24px 0 0; }
+.terms li { display: grid; grid-template-columns: 7.5rem 1fr; gap: 12px; align-items: baseline; padding-bottom: 14px; border-bottom: 1px dashed var(--line); }
+.terms .num { font-family: var(--font-mono); font-weight: 600; font-size: 1.3rem; color: var(--cognac); font-variant-numeric: tabular-nums; }
+.terms span:last-child { color: var(--muted); }
+.note { margin-top: 20px; font-size: .9rem; color: var(--muted); }
+
+.form { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 28px; display: grid; gap: 18px; }
+.row { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+.field { display: grid; gap: 6px; min-width: 0; }
+.field label { font-weight: 500; font-size: .92rem; }
+.field label small { color: var(--muted); font-weight: 400; }
+.field input, .field select, .field textarea {
+  font: inherit; color: var(--ink); background: var(--bg); border: 1px solid var(--line); border-radius: 8px;
+  padding: .7em .85em; width: 100%; min-width: 0;
+}
+.field textarea { resize: vertical; min-height: 84px; }
+.field input:focus-visible, .field select:focus-visible, .field textarea:focus-visible { outline: 2px solid var(--cognac); outline-offset: 1px; }
+.field.invalid input { border-color: var(--danger); }
+.hint { font-size: .82rem; color: var(--danger); }
+.swatches { display: flex; flex-wrap: wrap; gap: 8px; border: 0; padding: 0; margin: 0; }
+.swatches legend { font-weight: 500; font-size: .92rem; margin-bottom: 6px; padding: 0; }
+.swatch { position: relative; }
+.swatch input { position: absolute; opacity: 0; inset: 0; margin: 0; cursor: pointer; }
+.swatch span { display: inline-flex; align-items: center; gap: 8px; padding: .45em .9em .45em .5em; border: 1px solid var(--line); border-radius: 999px; font-size: .9rem; cursor: pointer; background: var(--bg); }
+.swatch i { width: 18px; height: 18px; border-radius: 50%; border: 1px solid rgba(0,0,0,.2); }
+.swatch input:checked + span { border-color: var(--cognac); box-shadow: 0 0 0 1px var(--cognac); }
+.swatch input:focus-visible + span { outline: 2px solid var(--cognac); outline-offset: 2px; }
+.total { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; padding-top: 14px; border-top: 1px dashed var(--line); flex-wrap: wrap; }
+.total span { color: var(--muted); }
+.total b { font-family: var(--font-mono); font-size: 1.4rem; font-variant-numeric: tabular-nums; }
+
+.result { display: grid; gap: 12px; padding: 20px; border: 1.5px dashed var(--cognac); border-radius: 12px; background: var(--bg); }
+.result h3 { font-size: 1.15rem; }
+.result pre { margin: 0; white-space: pre-wrap; word-break: break-word; font-family: var(--font-mono); font-size: .85rem; line-height: 1.6; background: var(--surface); padding: 14px; border-radius: 8px; }
+.result-actions { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; }
+.copy-status { font-size: .9rem; color: var(--muted); }
+
+/* Подвал */
+.site-footer .wrap { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 8px 24px; padding-block: 28px 40px; color: var(--muted); font-size: .9rem; }
+
+/* Рисунки сумок */
+.lth { fill: var(--leather); }
+.lth-d { fill: var(--leather-shade); }
+.flt { fill: var(--felt); }
+.strap { fill: none; stroke: var(--leather-shade); stroke-linecap: round; }
+.stitch { fill: none; stroke: var(--thread); stroke-width: 1.6; stroke-dasharray: 4 3; stroke-linecap: round; }
+.hw { fill: var(--thread); }
+.dim { stroke: var(--muted); stroke-width: 1; fill: none; }
+.dim-t { fill: var(--muted); font-family: var(--font-mono); font-size: 9px; }
+
+@media (max-width: 920px) {
+  .catalog { grid-template-columns: repeat(2, 1fr); }
+  .steps { grid-template-columns: repeat(2, 1fr); }
+  .order { grid-template-columns: 1fr; }
+}
+@media (max-width: 720px) {
+  .hero { grid-template-columns: 1fr; padding-block: 36px 48px; gap: 28px; }
+  section { padding-block: 48px; }
+}
+@media (max-width: 560px) {
+  .catalog { grid-template-columns: 1fr; }
+  .steps { grid-template-columns: 1fr; }
+  .row { grid-template-columns: 1fr; }
+  .form { padding: 20px; }
+  .nav { gap: 4px 14px; font-size: .92rem; }
+  .terms li { grid-template-columns: 6.5rem 1fr; }
+}
+</style>
+
+<header class="site-header">
+  <div class="wrap">
+    <a class="logo" href="#top" aria-label="Тігіс — на главную"><b>Тігіс</b><span>мастерская сумок</span></a>
+    <nav class="nav" aria-label="Разделы">
+      <a href="#catalog">Каталог</a>
+      <a href="#craft">Как мы шьём</a>
+      <a href="#order">Заказ</a>
+    </nav>
+  </div>
+</header>
+
+<main id="top">
+  <div class="wrap hero">
+    <div>
+      <div class="eyebrow">Кожаные сумки ручной работы · Казахстан</div>
+      <h1>Сумки, сшитые вручную <em>седельным швом</em></h1>
+      <p class="lead">Режем растительную кожу, пробиваем каждый прокол и шьём двумя иглами. Такой шов не распускается, даже если одна нить перетрётся.</p>
+      <div class="hero-actions">
+        <a class="btn btn-primary" href="#catalog">Смотреть сумки</a>
+        <a class="btn btn-ghost" href="#order">Заказать свою</a>
+      </div>
+      <div class="hero-facts">
+        <span><b>6</b> моделей</span>
+        <span><b>7–10</b> дней на пошив</span>
+        <span><b>2 года</b> гарантии на шов</span>
+      </div>
+    </div>
+    <div class="hero-art" aria-hidden="true">
+      <svg viewBox="0 0 260 220">
+        <path class="strap" stroke-width="7" d="M88 74 C88 18 128 18 128 74"/>
+        <path class="strap" stroke-width="7" d="M132 74 C132 18 172 18 172 74"/>
+        <path class="lth" d="M60 74 H200 L212 190 H48 Z"/>
+        <path class="lth-d" d="M60 74 H200 L201 86 H59 Z"/>
+        <path class="stitch" d="M67 92 H193 L203 182 H57 Z"/>
+        <circle class="hw" cx="88" cy="80" r="3"/><circle class="hw" cx="128" cy="80" r="3"/>
+        <circle class="hw" cx="132" cy="80" r="3"/><circle class="hw" cx="172" cy="80" r="3"/>
+        <path class="dim" d="M48 204 H212 M48 199 V209 M212 199 V209"/>
+        <text class="dim-t" x="130" y="217" text-anchor="middle">38 см</text>
+        <path class="dim" d="M226 74 V190 M221 74 H231 M221 190 H231"/>
+        <text class="dim-t" x="236" y="136">32 см</text>
+        <text class="dim-t" x="18" y="140">2,2 мм</text>
+        <path class="dim" d="M34 144 L54 160" stroke-dasharray="2 2"/>
+      </svg>
+    </div>
+  </div>
+
+  <div class="seam-wrap"><hr class="seam"></div>
+
+  <section id="catalog">
+    <div class="wrap">
+      <div class="section-head">
+        <div>
+          <div class="eyebrow">Каталог</div>
+          <h2>Шесть моделей на каждый день</h2>
+        </div>
+        <p>Каждая сумка шьётся под заказ. Размер, толщина кожи и время работы указаны для каждой модели.</p>
+      </div>
+      <div class="catalog" id="catalog-grid"></div>
+    </div>
+  </section>
+
+  <div class="seam-wrap"><hr class="seam"></div>
+
+  <section id="craft">
+    <div class="wrap">
+      <div class="section-head">
+        <div>
+          <div class="eyebrow">Как мы шьём</div>
+          <h2>Четыре шага от кожи до сумки</h2>
+        </div>
+        <p>Без швейной машинки. Одна сумка занимает от 6 до 14 часов работы мастера.</p>
+      </div>
+      <ol class="steps">
+        <li>
+          <div class="step-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20 L20 4"/><path d="M4 4 h10 v6"/><path d="M4 4 v16 h16" stroke-dasharray="2 2"/></svg></div>
+          <h3>Выкройка</h3>
+          <p>Переносим детали с лекал на кожу и вырезаем ножом по линейке. Направление волокон учитываем, чтобы сумка не тянулась.</p>
+        </li>
+        <li>
+          <div class="step-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M3 18 H21"/><path d="M6 6 V14 M10 6 V14 M14 6 V14 M18 6 V14"/><path d="M4 6 H20"/></svg></div>
+          <h3>Пробивка</h3>
+          <p>Пробойником с шагом 4 мм отмечаем проколы вдоль края. Ровный шаг делает шов аккуратным.</p>
+        </li>
+        <li>
+          <div class="step-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M3 12 L7 9 M8 12 L12 9 M13 12 L17 9 M18 12 L21 9.8"/><path d="M3 15 H21" stroke-dasharray="2 3"/></svg></div>
+          <h3>Седельный шов</h3>
+          <p>Шьём вощёной нитью двумя иглами навстречу друг другу. Каждый стежок затянут с обеих сторон.</p>
+        </li>
+        <li>
+          <div class="step-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><rect x="4" y="8" width="16" height="8" rx="4"/><path d="M8 12 H16"/></svg></div>
+          <h3>Обработка торцов</h3>
+          <p>Срезаем фаску, шлифуем и полируем торцы с воском, пока край не станет гладким и плотным.</p>
+        </li>
+      </ol>
+    </div>
+  </section>
+
+  <div class="seam-wrap"><hr class="seam"></div>
+
+  <section id="order">
+    <div class="wrap order">
+      <div>
+        <div class="eyebrow">Заказ</div>
+        <h2 style="font-size: var(--step-2); margin-top: 8px;">Сроки и гарантия</h2>
+        <ul class="terms">
+          <li><span class="num">7–10 дн.</span><span>шьём изделие под заказ</span></li>
+          <li><span class="num">2–5 дн.</span><span>доставка по Казахстану</span></li>
+          <li><span class="num">2 года</span><span>гарантия на шов</span></li>
+        </ul>
+        <p class="note">Заявка не отправляется автоматически. Заполните форму, скопируйте готовый текст заказа и отправьте его мастеру в мессенджер.</p>
+      </div>
+
+      <form class="form" id="order-form" novalidate>
+        <div class="row">
+          <div class="field">
+            <label for="f-model">Модель</label>
+            <select id="f-model" name="model"></select>
+          </div>
+          <div class="field">
+            <label for="f-qty">Количество</label>
+            <input id="f-qty" name="qty" type="number" min="1" max="20" value="1" inputmode="numeric">
+          </div>
+        </div>
+
+        <fieldset class="swatches" id="f-color">
+          <legend>Цвет кожи</legend>
+        </fieldset>
+
+        <div class="row">
+          <div class="field" id="fld-name">
+            <label for="f-name">Имя</label>
+            <input id="f-name" name="name" type="text" autocomplete="name" aria-describedby="h-name">
+            <span class="hint" id="h-name" hidden>Укажите имя, чтобы мастер знал, как к вам обращаться.</span>
+          </div>
+          <div class="field" id="fld-phone">
+            <label for="f-phone">Телефон</label>
+            <input id="f-phone" name="phone" type="tel" autocomplete="tel" placeholder="+7 7__ ___ __ __" aria-describedby="h-phone">
+            <span class="hint" id="h-phone" hidden>Укажите телефон, чтобы мастер мог с вами связаться.</span>
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="f-notes">Пожелания <small>(необязательно)</small></label>
+          <textarea id="f-notes" name="notes" placeholder="Например: инициалы на клапане, другой цвет нити"></textarea>
+        </div>
+
+        <div class="total"><span>Итого</span><b id="f-total">68 000 ₸</b></div>
+
+        <button class="btn btn-primary" type="submit">Собрать заказ</button>
+
+        <div class="result" id="result" hidden>
+          <h3>Текст заказа готов</h3>
+          <pre id="result-text"></pre>
+          <div class="result-actions">
+            <button class="btn btn-primary" type="button" id="copy-btn">Скопировать</button>
+            <span class="copy-status" id="copy-status" role="status"></span>
+          </div>
+        </div>
+      </form>
+    </div>
+  </section>
+</main>
+
+<div class="seam-wrap"><hr class="seam"></div>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <span>© 2026 Мастерская «Тігіс». Данные на сайте примерные.</span>
+    <span class="mono">Пн–Сб 10:00–19:00 · Вс выходной</span>
+  </div>
+</footer>
+
+<script>
+// Каталог: один список данных — карточки и форма строятся из него
+const PRODUCTS = [
+  { id: "bazar", name: "Тоут «Базар»", shape: "tote", desc: "Вместительная сумка на плечо для города и рынка. Внутри карман для телефона и ключей.", size: "38 × 32 × 12 см", leather: "2,2 мм", hours: 14, price: 68000 },
+  { id: "zhol", name: "Кросс-боди «Жол»", shape: "crossbody", desc: "Небольшая сумка через плечо с клапаном и регулируемым ремнём.", size: "22 × 16 × 6 см", leather: "1,8 мм", hours: 8, price: 42000 },
+  { id: "oyu", name: "Клатч «Ою» (кожа + войлок)", shape: "clutch", desc: "Клатч из кожи со вставкой из войлока с орнаментом ою.", size: "26 × 15 × 2 см", leather: "1,8 мм", hours: 10, price: 36000 },
+  { id: "qap", name: "Мешок «Қап»", shape: "sack", desc: "Мягкая сумка-мешок на кожаном шнурке. Затягивается одним движением.", size: "28 × 30 × 18 см", leather: "1,6 мм", hours: 9, price: 49000 },
+  { id: "sapar", name: "Рюкзак «Сапар»", shape: "backpack", desc: "Городской рюкзак с клапаном и внешним карманом. Помещается ноутбук 13″.", size: "30 × 40 × 14 см", leather: "2,2 мм", hours: 14, price: 79000 },
+  { id: "kishi", name: "Поясная «Кіші»", shape: "belt", desc: "Компактная сумка на пояс или через грудь для самого нужного.", size: "20 × 12 × 5 см", leather: "1,8 мм", hours: 6, price: 28000 }
+];
+
+const COLORS = [
+  { id: "cognac", name: "коньяк", hex: "#a65d2c" },
+  { id: "chocolate", name: "шоколад", hex: "#5a3420" },
+  { id: "natural", name: "натуральный", hex: "#d8b48a" },
+  { id: "black", name: "чёрный", hex: "#1c1c1c" }
+];
+
+const SHAPES = {
+  tote: `
+    <path class="strap" stroke-width="6" d="M68 50 C68 8 96 8 96 50"/>
+    <path class="strap" stroke-width="6" d="M104 50 C104 8 132 8 132 50"/>
+    <path class="lth" d="M44 50 H156 L166 148 H34 Z"/>
+    <path class="stitch" d="M51 60 H149 L157 140 H43 Z"/>`,
+  crossbody: `
+    <path class="strap" stroke-width="5" d="M54 70 C40 -10 160 -10 146 70"/>
+    <rect class="lth" x="48" y="62" width="104" height="80" rx="10"/>
+    <path class="lth-d" d="M48 72 Q48 62 58 62 H142 Q152 62 152 72 V104 Q100 122 48 104 Z"/>
+    <path class="stitch" d="M56 72 H144 V100 Q100 115 56 100 Z"/>
+    <circle class="hw" cx="100" cy="108" r="5"/>`,
+  clutch: `
+    <rect class="lth" x="26" y="50" width="148" height="78" rx="6"/>
+    <rect class="flt" x="26" y="50" width="148" height="34" rx="6"/>
+    <path class="stitch" d="M34 90 H166 M34 120 H166"/>
+    <path fill="none" stroke="var(--thread)" stroke-width="2" stroke-linecap="round" d="M60 67 c0 -9 12 -9 12 0 c0 6 -8 6 -8 1 M140 67 c0 -9 -12 -9 -12 0 c0 6 8 6 8 1 M72 67 H128 M100 58 v18"/>`,
+  sack: `
+    <path class="lth" d="M56 48 H144 L160 138 Q100 154 40 138 Z"/>
+    <path class="lth-d" d="M56 48 H144 L146 60 H54 Z"/>
+    <path class="strap" stroke-width="3" d="M58 56 Q100 66 142 56"/>
+    <path class="strap" stroke-width="3" d="M100 62 L94 88 M100 62 L108 86"/>
+    <circle class="lth-d" cx="94" cy="90" r="4"/><circle class="lth-d" cx="108" cy="88" r="4"/>
+    <path class="stitch" d="M62 70 L50 132 M138 70 L150 132"/>`,
+  backpack: `
+    <path class="strap" stroke-width="5" d="M86 34 C86 14 114 14 114 34"/>
+    <rect class="lth" x="52" y="32" width="96" height="118" rx="22"/>
+    <path class="lth-d" d="M52 56 Q52 32 76 32 H124 Q148 32 148 56 V84 Q100 98 52 84 Z"/>
+    <rect class="lth-d" x="72" y="104" width="56" height="36" rx="6"/>
+    <path class="stitch" d="M60 58 Q60 40 78 40 H122 Q140 40 140 58 V80 Q100 92 60 80 Z"/>
+    <path class="stitch" d="M78 110 H122 V134 H78 Z"/>
+    <rect class="hw" x="96" y="86" width="8" height="12" rx="2"/>`,
+  belt: `
+    <path class="strap" stroke-width="8" d="M6 92 Q100 70 194 92"/>
+    <rect class="lth" x="46" y="58" width="108" height="64" rx="30"/>
+    <path class="stitch" d="M58 70 H142 M54 112 H146" />
+    <path stroke="var(--leather-shade)" stroke-width="3" d="M62 82 H138"/>
+    <rect class="hw" x="132" y="78" width="10" height="8" rx="2"/>`
+};
+
+const fmt = n => String(n).replace(/\B(?=(\d{3})+(?!\d))/g, " ") + " ₸";
+
+const grid = document.getElementById("catalog-grid");
+grid.innerHTML = PRODUCTS.map(p => `
+  <article class="card">
+    <div class="card-art" aria-hidden="true"><svg viewBox="0 0 200 160">${SHAPES[p.shape]}</svg></div>
+    <div class="card-body">
+      <h3>${p.name}</h3>
+      <p class="desc">${p.desc}</p>
+      <dl class="specs">
+        <dt>Размер</dt><dd>${p.size}</dd>
+        <dt>Кожа</dt><dd>${p.leather}</dd>
+        <dt>Работа</dt><dd>${p.hours} ч</dd>
+      </dl>
+      <div class="card-foot">
+        <span class="price">${fmt(p.price)}</span>
+        <button class="btn btn-primary" type="button" data-order="${p.id}" aria-label="Заказать: ${p.name}">Заказать</button>
+      </div>
+    </div>
+  </article>`).join("");
+
+// Форма
+const form = document.getElementById("order-form");
+const modelSel = document.getElementById("f-model");
+const qtyIn = document.getElementById("f-qty");
+const nameIn = document.getElementById("f-name");
+const phoneIn = document.getElementById("f-phone");
+const notesIn = document.getElementById("f-notes");
+const totalEl = document.getElementById("f-total");
+const result = document.getElementById("result");
+const resultText = document.getElementById("result-text");
+const copyBtn = document.getElementById("copy-btn");
+const copyStatus = document.getElementById("copy-status");
+
+modelSel.innerHTML = PRODUCTS.map(p => `<option value="${p.id}">${p.name} — ${fmt(p.price)}</option>`).join("");
+document.getElementById("f-color").insertAdjacentHTML("beforeend", COLORS.map((c, i) => `
+  <label class="swatch">
+    <input type="radio" name="color" id="f-color-${c.id}" value="${c.id}"${i === 0 ? " checked" : ""}>
+    <span><i style="background:${c.hex}"></i>${c.name}</span>
+  </label>`).join(""));
+
+const qty = () => Math.min(20, Math.max(1, parseInt(qtyIn.value, 10) || 1));
+const product = () => PRODUCTS.find(p => p.id === modelSel.value) || PRODUCTS[0];
+
+function updateTotal() {
+  totalEl.textContent = fmt(product().price * qty());
+  result.hidden = true;
+}
+[modelSel, qtyIn].forEach(el => el.addEventListener("input", updateTotal));
+form.addEventListener("change", e => { if (e.target.name === "color") result.hidden = true; });
+qtyIn.addEventListener("blur", () => { qtyIn.value = qty(); updateTotal(); });
+
+grid.addEventListener("click", e => {
+  const btn = e.target.closest("[data-order]");
+  if (!btn) return;
+  modelSel.value = btn.dataset.order;
+  updateTotal();
+  document.getElementById("order").scrollIntoView({ block: "start" });
+  setTimeout(() => modelSel.focus({ preventScroll: true }), 350);
+});
+
+function check(input, fieldId, hintId) {
+  const ok = input.value.trim() !== "";
+  document.getElementById(fieldId).classList.toggle("invalid", !ok);
+  document.getElementById(hintId).hidden = ok;
+  input.setAttribute("aria-invalid", String(!ok));
+  return ok;
+}
+nameIn.addEventListener("input", () => { if (nameIn.value.trim()) check(nameIn, "fld-name", "h-name"); });
+phoneIn.addEventListener("input", () => { if (phoneIn.value.trim()) check(phoneIn, "fld-phone", "h-phone"); });
+
+form.addEventListener("submit", e => {
+  e.preventDefault();
+  const okName = check(nameIn, "fld-name", "h-name");
+  const okPhone = check(phoneIn, "fld-phone", "h-phone");
+  if (!okName) { nameIn.focus(); return; }
+  if (!okPhone) { phoneIn.focus(); return; }
+
+  const p = product();
+  const n = qty();
+  const color = COLORS.find(c => c.id === (form.querySelector("input[name=color]:checked") || {}).value) || COLORS[0];
+  const lines = [
+    "Здравствуйте! Хочу заказать сумку в мастерской «Тігіс».",
+    "",
+    `Модель: ${p.name}`,
+    `Цвет кожи: ${color.name}`,
+    `Количество: ${n} шт.`,
+    `Цена за штуку: ${fmt(p.price)}`,
+    `Итого: ${fmt(p.price * n)}`,
+    "",
+    `Имя: ${nameIn.value.trim()}`,
+    `Телефон: ${phoneIn.value.trim()}`
+  ];
+  if (notesIn.value.trim()) lines.push(`Пожелания: ${notesIn.value.trim()}`);
+  resultText.textContent = lines.join("\n");
+  copyStatus.textContent = "";
+  result.hidden = false;
+  result.scrollIntoView({ block: "nearest" });
+  copyBtn.focus({ preventScroll: true });
+});
+
+copyBtn.addEventListener("click", () => {
+  const text = resultText.textContent;
+  const fallback = () => {
+    const range = document.createRange();
+    range.selectNodeContents(resultText);
+    const sel = window.getSelection();
+    sel.removeAllRanges();
+    sel.addRange(range);
+    copyStatus.textContent = "Текст выделен. Нажмите Ctrl+C или «Копировать» в меню.";
+  };
+  try {
+    navigator.clipboard.writeText(text)
+      .then(() => { copyStatus.textContent = "Скопировано. Отправьте текст мастеру в мессенджер."; })
+      .catch(fallback);
+  } catch (err) { fallback(); }
+});
+
+updateTotal();
+</script>
