@@ -30,7 +30,7 @@ body { min-height: 100vh; display: grid; place-items: center; padding-block: 32p
 .login form { display: grid; gap: 14px; }
 .login .btn { width: 100%; }
 .back { text-align: center; font-size: .9rem; }
-.code-input { font-family: var(--font-mono) !important; font-size: 1.6rem !important; letter-spacing: .3em; text-align: center; }
+#again-btn { width: 100%; }
 </style>
 </head>
 <body>
@@ -45,7 +45,7 @@ body { min-height: 100vh; display: grid; place-items: center; padding-block: 32p
   </a>
   <div>
     <h1>Вход для мастера</h1>
-    <p class="sub">Введите свою почту. Мы пришлём письмо с кодом для входа, пароль не нужен.</p>
+    <p class="sub">Введите свою почту. Мы пришлём письмо со ссылкой для входа, пароль не нужен.</p>
   </div>
 
   <form id="login-form" novalidate>
@@ -53,19 +53,11 @@ body { min-height: 100vh; display: grid; place-items: center; padding-block: 32p
       <label for="email">Почта</label>
       <input id="email" type="email" autocomplete="email" inputmode="email" placeholder="you@example.com" required>
     </div>
-    <button class="btn btn-primary" type="submit" id="send-btn">Получить код</button>
-  </form>
-
-  <form id="code-form" novalidate hidden>
-    <div class="field">
-      <label for="code">Код из письма</label>
-      <input id="code" type="text" inputmode="numeric" autocomplete="one-time-code" maxlength="10" placeholder="123456" class="code-input">
-    </div>
-    <button class="btn btn-primary" type="submit" id="verify-btn">Войти</button>
-    <button class="btn btn-ghost" type="button" id="again-btn">Другая почта или новый код</button>
+    <button class="btn btn-primary" type="submit" id="send-btn">Получить ссылку для входа</button>
   </form>
 
   <p class="msg" id="msg" role="status" hidden></p>
+  <button class="btn btn-ghost" type="button" id="again-btn" hidden>Отправить письмо ещё раз</button>
   <p class="back"><a href="./">← На сайт</a></p>
 </main>
 
@@ -108,7 +100,7 @@ if (!cfg.supabaseUrl || !cfg.supabaseAnonKey || !window.supabase) {
       options: { shouldCreateUser: false, emailRedirectTo: adminUrl }
     });
     btn.disabled = false;
-    btn.textContent = "Получить код";
+    btn.textContent = "Получить ссылку для входа";
     if (error) {
       const denied = /signup|not allowed|not found/i.test(error.message);
       const tooFast = /seconds|rate/i.test(error.message);
@@ -118,32 +110,14 @@ if (!cfg.supabaseUrl || !cfg.supabaseAnonKey || !window.supabase) {
       return;
     }
     form.hidden = true;
-    codeForm.hidden = false;
-    show("Код отправлен на " + email + ". Если письма нет, проверьте папку «Спам».", "ok");
-    codeIn.focus();
+    againBtn.hidden = false;
+    show("Письмо отправлено на " + email + ". Откройте его на этом же телефоне и нажмите ссылку «Log In» — откроется админка. Если письма нет, проверьте папку «Спам».", "ok");
   });
 
-  const codeForm = document.getElementById("code-form");
-  const codeIn = document.getElementById("code");
-  const verifyBtn = document.getElementById("verify-btn");
-
-  codeForm.addEventListener("submit", async e => {
-    e.preventDefault();
-    const token = codeIn.value.replace(/\D/g, "");
-    if (token.length < 6) { show("Введите код из письма — 6 цифр.", "err"); codeIn.focus(); return; }
-    verifyBtn.disabled = true;
-    verifyBtn.textContent = "Проверяем…";
-    const { error } = await db.auth.verifyOtp({ email: emailIn.value.trim(), token, type: "email" });
-    verifyBtn.disabled = false;
-    verifyBtn.textContent = "Войти";
-    if (error) { show("Код не подошёл или устарел. Проверьте цифры или запросите новый код.", "err"); return; }
-    location.replace(adminUrl);
-  });
-
-  document.getElementById("again-btn").addEventListener("click", () => {
-    codeForm.hidden = true;
+  const againBtn = document.getElementById("again-btn");
+  againBtn.addEventListener("click", () => {
+    againBtn.hidden = true;
     form.hidden = false;
-    codeIn.value = "";
     msg.hidden = true;
     emailIn.focus();
   });
