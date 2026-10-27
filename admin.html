@@ -180,20 +180,6 @@
             <input id="size" type="text" placeholder="38 × 32 × 12 см">
           </div>
         </div>
-        <div class="row3">
-          <div class="field">
-            <label for="leather">Кожа</label>
-            <input id="leather" type="text" placeholder="2,2 мм">
-          </div>
-          <div class="field">
-            <label for="hours">Часов работы</label>
-            <input id="hours" type="number" min="0" inputmode="numeric" placeholder="14">
-          </div>
-          <div class="field">
-            <label for="sort">Порядок</label>
-            <input id="sort" type="number" inputmode="numeric" placeholder="1">
-          </div>
-        </div>
         <div class="field">
           <label for="shape">Рисунок, если нет фото</label>
           <select id="shape">
@@ -362,7 +348,7 @@ $("list").addEventListener("click", async e => {
 });
 
 // Редактор
-const fields = ["name", "description", "price", "size", "leather", "hours", "sort", "shape"];
+const fields = ["name", "description", "price", "size", "shape"];
 
 function openEditor(bag) {
   editingId = bag.id;
@@ -494,20 +480,16 @@ $("bag-form").addEventListener("submit", async e => {
       if (up.error) throw new Error("фото не загрузилось: " + up.error.message);
       url = db.storage.from(BUCKET).getPublicUrl(path).data.publicUrl;
     }
-    const hours = parseInt($("hours").value, 10);
-    const sort = parseInt($("sort").value, 10);
     const row = {
       name,
       description: $("description").value.trim(),
       price,
       size: $("size").value.trim(),
-      leather: $("leather").value.trim(),
-      hours: Number.isFinite(hours) ? hours : null,
-      sort: Number.isFinite(sort) ? sort : (bags.length + 1),
       shape: $("shape").value,
       visible: $("visible").checked,
       photo_url: url
     };
+    if (!editingId) row.sort = bags.length + 1;
     const res = editingId
       ? await db.from("bags").update(row).eq("id", editingId).select().single()
       : await db.from("bags").insert(row).select().single();

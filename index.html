@@ -178,8 +178,6 @@ section { padding-block: 80px; scroll-margin-top: 70px; }
 .card-art.has-photo { padding: 0; background: var(--bg); overflow: hidden; }
 .card-art.has-photo img { width: 100%; height: 100%; object-fit: cover; transition: transform .4s; }
 .card:hover .card-art.has-photo img { transform: scale(1.04); }
-.card-art .hours { z-index: 1; }
-.card-art .hours { position: absolute; top: 14px; left: 14px; font-family: var(--font-mono); font-size: .72rem; color: var(--muted); background: var(--bg); border: 1px dashed var(--line); border-radius: 999px; padding: 3px 10px; }
 .card-body { display: flex; flex-direction: column; gap: 14px; padding: 22px; flex: 1; border-top: 1px dashed var(--line); }
 .card h3 { font-size: 1.4rem; }
 .card .desc { color: var(--muted); font-size: .95rem; }
@@ -664,7 +662,6 @@ function renderCatalog() {
   grid.innerHTML = PRODUCTS.map(p => `
   <article class="card" data-id="${esc(p.id)}" data-color="${COLORS[0].id}">
     <div class="card-art${p.photo ? " has-photo" : ""}">
-      ${p.hours ? `<span class="hours">${esc(p.hours)} ч работы</span>` : ""}
       ${p.photo
         ? `<img src="${esc(p.photo)}" alt="${esc(p.name)}" loading="lazy">`
         : `<svg viewBox="0 0 200 170" aria-hidden="true">${SHAPES[p.shape] || SHAPES.tote}</svg>`}
@@ -674,8 +671,6 @@ function renderCatalog() {
       <p class="desc">${esc(p.desc)}</p>
       <dl class="specs">
         ${p.size ? `<dt>Размер</dt><dd>${esc(p.size)}</dd>` : ""}
-        ${p.leather ? `<dt>Кожа</dt><dd>${esc(p.leather)}</dd>` : ""}
-        ${p.hours ? `<dt>Работа</dt><dd>${esc(p.hours)} ч</dd>` : ""}
       </dl>
       <div class="colors" role="group" aria-label="Цвет кожи: ${esc(p.name)}">
         <span class="label">Цвет: <b>${COLORS[0].name}</b></span>
@@ -821,8 +816,8 @@ async function loadRemoteCatalog() {
     const rows = await res.json();
     if (!rows.length) return;
     PRODUCTS = rows.map(r => ({
-      id: r.id, name: r.name, desc: r.description, size: r.size, leather: r.leather,
-      hours: r.hours, price: r.price, shape: r.shape || "tote", photo: r.photo_url
+      id: r.id, name: r.name, desc: r.description, size: r.size,
+      price: r.price, shape: r.shape || "tote", photo: r.photo_url
     }));
     renderCatalog();
     updateTotal();
